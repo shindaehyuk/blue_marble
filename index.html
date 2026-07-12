@@ -49,7 +49,7 @@
      ============================================================ */
   #intro{
     position:fixed; inset:0; z-index:100;
-    background:var(--navy-0);
+    background:#0e1f30; /* 로고 이미지 배경색과 동일 */
     background-image:
       repeating-linear-gradient(45deg,  rgba(255,255,255,.035) 0 1px, transparent 1px 30px),
       repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 1px, transparent 1px 30px);
@@ -91,7 +91,9 @@
   .intro-logo{
     display:block; margin:0 auto;
     width:min(78vw, 430px);
-    filter:drop-shadow(0 14px 44px rgba(230,192,92,.25));
+    border-radius:22px;
+    border:2px solid rgba(230,192,92,.45);
+    box-shadow:0 18px 50px rgba(0,0,0,.5), 0 0 40px rgba(230,192,92,.18);
     animation:logoFloat 4s ease-in-out infinite;
   }
   @keyframes logoFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
@@ -176,7 +178,7 @@
   .tile{
     position:relative;
     background:var(--navy-2);
-    border:2px solid rgba(255,255,255,.14);
+    border:3px solid rgba(255,255,255,.22);
     border-radius:10px;
     overflow:hidden;
     cursor:pointer;
@@ -199,10 +201,14 @@
     word-break:keep-all;
   }
   /* 팀 구역 (일꾼을 세울 수 있는 16칸): 팀 색깔 테두리 */
-  .tile.dept{ border-color:var(--tc); }
-  .tile.dept .tname{ box-shadow:inset 0 2px 0 color-mix(in srgb, var(--tc) 55%, transparent); }
+  .tile.dept{
+    border:4px solid var(--tc);
+    box-shadow:0 0 10px color-mix(in srgb, var(--tc) 35%, transparent),
+      inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .tile.dept .tname{ box-shadow:inset 0 2px 0 color-mix(in srgb, var(--tc) 70%, transparent); }
   /* 특수 칸: 골드 테두리 */
-  .tile.corner{ border-color:var(--gold); }
+  .tile.corner{ border-color:var(--gold); border-width:3.5px; }
   .tile.corner .tname{ font-size:clamp(10px,1.5vmin,15px); padding:4px 2px 5px; }
   .tile.gold, .tile.prize{ border-color:var(--gold); }
   .tile.gold .tname, .tile.prize .tname{
@@ -267,18 +273,14 @@
     border-radius:14px;
     overflow:hidden;
     border:2px solid var(--gold);
-    background:var(--navy-1);
-    background-image:
-      repeating-linear-gradient(45deg,  rgba(255,255,255,.04) 0 1px, transparent 1px 26px),
-      repeating-linear-gradient(-45deg, rgba(255,255,255,.04) 0 1px, transparent 1px 26px);
-    box-shadow:inset 0 0 60px rgba(2,8,20,.6), 0 10px 30px rgba(2,8,20,.5);
+    background:#0e1f30; /* 로고 이미지 배경색과 동일 */
+    box-shadow:inset 0 0 60px rgba(2,8,20,.4), 0 10px 30px rgba(2,8,20,.5);
     display:flex; align-items:center; justify-content:center;
   }
   .center .clogo{
-    width:74%; max-height:70%;
-    object-fit:contain;
-    margin-bottom:8%;
-    filter:drop-shadow(0 12px 34px rgba(230,192,92,.22));
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center;
     pointer-events:none;
   }
   .center .cbar{
