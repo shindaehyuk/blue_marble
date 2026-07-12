@@ -524,6 +524,83 @@
   .dice-actions{ display:flex; justify-content:center; gap:10px; padding:10px 20px 0; }
   .dice-actions .mbtn{ flex:none; min-width:150px; }
 
+  /* ------- 왼쪽 사이드 메뉴 ------- */
+  .side-menu{
+    position:fixed; left:14px; top:50%; transform:translateY(-50%);
+    z-index:90;
+    display:flex; flex-direction:column; gap:10px;
+  }
+  .side-btn{
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    width:78px; padding:13px 6px 11px;
+    background:rgba(15,30,54,.92);
+    border:1.5px solid var(--navy-line); border-radius:14px;
+    color:var(--gold-light); font-size:11.5px; font-weight:700;
+    cursor:pointer; text-align:center; line-height:1.3;
+    box-shadow:0 8px 22px rgba(0,0,0,.45);
+    transition:transform .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .side-btn .ico{ font-size:23px; }
+  .side-btn:hover{ transform:translateY(-2px); border-color:var(--gold); background:var(--navy-3); }
+  .side-btn:active{ transform:scale(.96); }
+  @media (max-width:1150px){
+    .side-menu{ top:auto; bottom:12px; left:12px; transform:none; flex-direction:row; }
+    .side-btn{ width:auto; flex-direction:row; padding:9px 14px; gap:7px; }
+    .side-btn .ico{ font-size:17px; }
+  }
+
+  /* ------- 게임 규칙 모달 ------- */
+  .rules-head{ padding:22px 22px 6px; text-align:center; }
+  .rules-head h3{ margin:0; font-size:23px; font-weight:800; color:var(--text); }
+  .rules-head p{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+  .rules-body{ padding:12px 20px 20px; }
+  .rule-sec{
+    margin-top:11px;
+    background:rgba(8,17,33,.6); border:1.5px solid rgba(255,255,255,.1); border-radius:12px;
+    padding:12px 15px;
+  }
+  .rule-sec h4{
+    margin:0 0 7px; font-size:14px; color:var(--gold-light);
+    display:flex; align-items:center; gap:7px;
+  }
+  .rule-sec ul{ margin:0; padding-left:18px; display:flex; flex-direction:column; gap:5px; }
+  .rule-sec li{ font-size:13.5px; line-height:1.55; color:var(--text); word-break:keep-all; }
+  .rule-sec li b{ color:var(--gold-light); }
+  .rule-sec .zone-chips{ display:flex; gap:5px; flex-wrap:wrap; margin-top:7px; }
+  .rule-sec .zc{
+    font-size:11.5px; font-weight:700; color:var(--text);
+    border:1.5px solid var(--tc); border-radius:999px; padding:2px 9px;
+    background:color-mix(in srgb, var(--tc) 14%, transparent);
+  }
+
+  /* ------- 팀 이름 수정 모달 ------- */
+  .team-edit-list{ display:flex; flex-direction:column; gap:10px; padding:16px 20px 4px; }
+  .te-row{
+    display:flex; align-items:center; gap:10px;
+    background:rgba(8,17,33,.6);
+    border:2px solid color-mix(in srgb, var(--tc) 55%, transparent);
+    border-radius:14px; padding:9px 12px;
+  }
+  .te-row .face{
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    background:color-mix(in srgb, var(--tc) 20%, transparent);
+    border:2.5px solid var(--tc);
+    display:flex; align-items:center; justify-content:center; font-size:21px;
+  }
+  .te-row input{
+    flex:1; min-width:0;
+    height:38px; padding:0 12px;
+    font-family:var(--font); font-size:14.5px; font-weight:700; color:var(--text);
+    background:rgba(15,30,54,.9);
+    border:1.5px solid rgba(255,255,255,.16); border-radius:10px;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .te-row input:focus{ border-color:var(--tc);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--tc) 25%, transparent); }
+  .te-row .tag{ font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.1em; flex-shrink:0; }
+  .team-edit-actions{ display:flex; gap:9px; padding:14px 20px 20px; }
+
   /* ------- 토스트 ------- */
   .toast{
     position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
@@ -586,6 +663,12 @@
       </div>
       <div id="pieceLayer"></div>
     </div>
+  </div>
+
+  <!-- 왼쪽 사이드 메뉴 -->
+  <div class="side-menu">
+    <button class="side-btn" id="rulesBtn"><span class="ico">📖</span>게임 규칙<br>보기</button>
+    <button class="side-btn" id="teamEditBtn"><span class="ico">✏️</span>팀 이름<br>수정하기</button>
   </div>
 </div>
 
@@ -661,6 +744,87 @@
   </div>
 </div>
 
+<!-- ============================================================
+     🪟 게임 규칙 모달
+============================================================ -->
+<div class="modal" id="rulesModal" aria-hidden="true">
+  <div class="mback" data-close></div>
+  <div class="mcard big">
+    <button class="mclose" data-close>✕</button>
+    <div class="rules-head">
+      <h3>📖 부름마블 게임 규칙</h3>
+      <p>일꾼을 세워라! · 총무부 ✕ 친교부 연합교제</p>
+    </div>
+    <div class="rules-body">
+      <div class="rule-sec">
+        <h4>🎲 기본 진행</h4>
+        <ul>
+          <li>주사위 2개를 굴려 나온 숫자만큼 이동합니다.</li>
+          <li><b>더블</b>이 나오면 한 번 더 굴립니다.</li>
+          <li><b>본당 로비(출발)</b>를 지날 때마다 달란트를 지급받습니다.</li>
+        </ul>
+      </div>
+      <div class="rule-sec">
+        <h4>⛪ 부서 칸 (16곳)</h4>
+        <ul>
+          <li>부서 칸에 도착하면 그 부서의 <b>미니게임</b>을 진행합니다.</li>
+          <li>미니게임에서 승리하면 <b>일꾼</b>을 세울 수 있습니다.</li>
+          <li>다른 팀의 일꾼이 세워진 칸에 도착하면 <b>통행료(달란트)</b>를 냅니다.</li>
+        </ul>
+      </div>
+      <div class="rule-sec" id="ruleZoneSec">
+        <h4>🏠 팀 구역 · 통행료 ×2</h4>
+        <ul>
+          <li>부서 16칸은 4칸씩 <b>팀 구역</b>으로 나뉘어 있습니다 (칸 테두리 색).</li>
+          <li>자기 구역 칸에 <b>홈팀이 일꾼</b>을 세우면 그 칸의 통행료가 <b>2배</b>!</li>
+        </ul>
+        <div class="zone-chips" id="ruleZoneChips"></div>
+      </div>
+      <div class="rule-sec">
+        <h4>🔑 황금열쇠</h4>
+        <ul>
+          <li>황금열쇠 칸에 도착하면 카드를 뽑아 지시를 따릅니다.</li>
+        </ul>
+      </div>
+      <div class="rule-sec">
+        <h4>✨ 특수 칸</h4>
+        <ul>
+          <li><b>사망의 골짜기</b> — 한 턴 쉬기. 더블이 나오면 다시 굴려서 바로 탈출!</li>
+          <li><b>총무부</b> — 다음 턴에 원하는 곳으로 갈 수 있습니다.</li>
+          <li><b>바자회</b> — 2달란트를 냅니다.</li>
+          <li><b>상급</b> — 모여 있는 달란트를 모두 가져갑니다!</li>
+        </ul>
+      </div>
+      <div class="rule-sec">
+        <h4>🏆 승리 조건</h4>
+        <ul>
+          <li>게임 종료 시 <b>달란트와 일꾼(자산)</b>이 가장 많은 팀이 우승합니다.</li>
+          <li>동점일 경우 보유 달란트로 결정합니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     🪟 팀 이름 수정 모달
+============================================================ -->
+<div class="modal" id="teamModal" aria-hidden="true">
+  <div class="mback" data-close></div>
+  <div class="mcard">
+    <button class="mclose" data-close>✕</button>
+    <div class="wm-head">
+      <h3>✏️ 팀 이름 수정하기</h3>
+      <p>바꾼 이름은 말·일꾼·모달에 바로 적용됩니다</p>
+    </div>
+    <div class="team-edit-list" id="teamEditList"></div>
+    <div class="team-edit-actions">
+      <button class="mbtn" id="teamSaveBtn">💾 저장</button>
+      <button class="mbtn ghost" id="teamResetBtn">기본 이름으로</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -681,72 +845,86 @@ const TILES = [
     desc:"출발 칸입니다! 이곳을 지날 때마다 달란트를 지급받습니다." },
   { name:"은장회",        img:"assets/image65.png", kind:"dept", home:"A",
     desc:"은장회 칸에 도착했습니다.",
-    game:"잇몸으로 말해요 — 잇몸 안 보이게 웃기기 게임", win:"1분 동안 먼저 웃는 팀이 패배" },
+    game:"잇몸으로 말해요 — 단어·이름을 돌아가면서 잇몸으로 말하기" },
   { name:"영유아부",      img:"assets/image62.png", kind:"dept", home:"A",
     desc:"영유아부 칸에 도착했습니다.",
-    game:"쪽쪽이 퀴즈", win:"진행자 안내에 따라 승패 결정" },
+    game:"쪽쪽이 퀴즈 — 쪽쪽이를 문 채로 퀴즈를 내고, 나머지는 쪽쪽이를 문 채로 맞추는 게임",
+    win:"1분 안에 n개의 문제를 맞추면 일꾼을 세울 수 있음 · (경쟁) 더 많은 문제를 맞추면 일꾼을 뺏을 수 있음" },
   { name:"어린이문화부",  img:"assets/image63.png", kind:"dept", home:"A",
     desc:"어린이문화부 칸에 도착했습니다.",
-    game:"공 굴리고 타이밍 맞춰서 머리로 공 멈추기", win:"돌아가면서 진행, 먼저 승리하는 팀이 승리" },
+    game:"미니게임 준비 중" },
   { name:"교회학교",      img:"assets/image64.png", kind:"dept", home:"A",
     desc:"교회학교 칸에 도착했습니다.",
-    game:"타이머 맞추기 — 초반 3초만 같이 세고, 이후 마음속으로 세다가 30초라고 생각할 때 손들기",
-    win:"30초에 더 가깝게 손을 든 팀이 승리" },
+    game:"타이머 맞추기 게임",
+    win:"30초에 가장 근사하게 맞추는 팀이 승리" },
   { name:"청년회",        img:"assets/image61.png", kind:"dept", home:"B",
-    desc:"청년회 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"청년회 칸에 도착했습니다.",
+    game:"겹친 그림 찾기 · 초근접 음식 맞추기 게임" },
   { name:"사망의 골짜기", img:"assets/image78.png", kind:"island",
-    desc:"3턴 동안 정지! 더블 주사위, 탈출권, 황금열쇠로 탈출할 수 있습니다." },
+    desc:"한 턴 쉬기! 더블이 나오면 다시 굴려서 바로 탈출합니다." },
   { name:"친교부",        img:"assets/image66.png", kind:"dept", home:"B",
-    desc:"친교부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"친교부 칸에 도착했습니다.",
+    game:"5인 6각" },
   { name:"갈릴리학교",    img:"assets/image67.png", kind:"dept", home:"B",
-    desc:"갈릴리학교 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"갈릴리학교 칸에 도착했습니다.",
+    game:"전도집회 말씀 빈칸 빨리 맞추기" },
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"농선부",        img:"assets/image68.png", kind:"dept", home:"B",
     desc:"농선부 칸에 도착했습니다.",
-    game:"몸으로 말해요 — 제시어를 릴레이로 앞사람에게 몸으로 설명, 마지막 사람이 맞추기",
-    win:"제한 시간 안에 많이 맞추면 승리" },
+    game:"몸으로 말해요 (1분 동안)" },
   { name:"미화부",        img:"assets/image69.png", kind:"dept", home:"C",
-    desc:"미화부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"미화부 칸에 도착했습니다.",
+    game:"과자 던져서 많이 먹기" },
   { name:"총무부",        img:"assets/image79.png", kind:"hq",
-    desc:"게임 진행 본부입니다. 황금열쇠의 지시로 이동해 오기도 합니다." },
+    desc:"다음 턴에 원하는 곳으로 갈 수 있습니다." },
   { name:"서적부",        img:"assets/image70.png", kind:"dept", home:"C",
-    desc:"서적부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"서적부 칸에 도착했습니다.",
+    game:"평생 자기 옆에 두고 읽는 성경! 진행자가 말하는 구절을 듣고 빨리 찾기" },
   { name:"미선부",        img:"assets/image71.png", kind:"dept", home:"C",
-    desc:"미선부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"미선부 칸에 도착했습니다.",
+    game:"이멤버 리멤버 — 미션 포즈로 같이 찍고, 정해진 장소에 와서 한영재에게 보내기" },
   { name:"황금열쇠",      img:"assets/image58.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"찬양대",        img:"assets/image72.png", kind:"dept", home:"C",
     desc:"찬양대 칸에 도착했습니다.",
-    game:"찬양 전주 3초만 듣고 어떤 찬양인지 알아맞히기", win:"많이 맞힌 팀이 승리" },
+    game:"찬양 전주 듣고 빨리 맞추기" },
   { name:"영선부",        img:"assets/image73.png", kind:"dept", home:"D",
-    desc:"영선부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"영선부 칸에 도착했습니다.",
+    game:"영어 끝말잇기" },
   { name:"바자회",        img:"assets/image80.png", kind:"bazaar",
-    desc:"세계 선교를 위한 바자회 날입니다! 특별 이벤트 칸." },
+    desc:"2달란트를 내세요!" },
   { name:"시설관리부",    img:"assets/image76.png", kind:"dept", home:"D",
-    desc:"시설관리부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"시설관리부 칸에 도착했습니다.",
+    game:"병뚜껑을 정해진 위치로 가장 근접하게 날리는 게임" },
   { name:"꽃꽂이부",      img:"assets/image75.png", kind:"dept", home:"D",
-    desc:"꽃꽂이부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"꽃꽂이부 칸에 도착했습니다.",
+    game:"다트 꽃꽂이",
+    win:"많은 점수를 얻은 팀이 승리" },
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"상급",          img:"assets/image59.png", kind:"prize",
-    desc:"상급 칸! 도착하면 달란트를 획득합니다." },
+    desc:"모여 있는 달란트를 모두 가져갑니다!" },
   { name:"주차수송부",    img:"assets/image74.png", kind:"dept", home:"D",
-    desc:"주차수송부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
+    desc:"주차수송부 칸에 도착했습니다.",
+    game:"접시에 탁구공을 올려 등에 올리고, 기어가서 수송하는 게임",
+    win:"수송한 개수 + 빨리 도착하기" },
 ];
 
 const KIND_LABEL = { start:"출발", island:"특수 칸", hq:"진행 본부", bazaar:"특수 칸", dept:"부서", gold:"황금열쇠", prize:"상급" };
 
-/* 4팀 (동물 캐릭터 말) */
+/* 4팀 (동물 캐릭터 말) — 이름은 게임 화면 왼쪽 '팀 이름 수정하기'에서 변경 가능 */
 const TEAMS = [
   { id:"A", name:"강아지팀", emoji:"🐶", color:"var(--teamA)" },
   { id:"B", name:"고양이팀", emoji:"🐱", color:"var(--teamB)" },
   { id:"C", name:"토끼팀",   emoji:"🐰", color:"var(--teamC)" },
   { id:"D", name:"여우팀",   emoji:"🦊", color:"var(--teamD)" },
 ];
+const DEFAULT_TEAM_NAMES = Object.fromEntries(TEAMS.map(t=>[t.id, t.name]));
 
 const GOLDEN_KEY_PAGE = "golden_key.html";
-const WORKER_KEY = "bm_workers_v1", PIECE_KEY = "bm_pieces_v1", STARTED_KEY = "bm_started_v1";
+const WORKER_KEY = "bm_workers_v1", PIECE_KEY = "bm_pieces_v1",
+      STARTED_KEY = "bm_started_v1", TEAM_NAME_KEY = "bm_teamnames_v1";
 
 const $ = id => document.getElementById(id);
 function teamOf(id){ return TEAMS.find(t=>t.id===id); }
@@ -758,6 +936,10 @@ let pieces  = {};   // { teamId: {x,y} (% 좌표) }
 function loadState(){
   try{ const w = JSON.parse(localStorage.getItem(WORKER_KEY)); if(w && typeof w==="object") workers = w; }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(PIECE_KEY));  if(p && typeof p==="object") pieces  = p; }catch(e){}
+  try{
+    const n = JSON.parse(localStorage.getItem(TEAM_NAME_KEY));
+    if(n && typeof n==="object") TEAMS.forEach(t=>{ if(n[t.id]) t.name = String(n[t.id]).slice(0,12); });
+  }catch(e){}
   /* 일꾼을 세울 수 없는 칸에 저장돼 있던 일꾼은 정리 */
   Object.keys(workers).forEach(k=>{
     if(!TILES[k] || TILES[k].kind!=="dept") delete workers[k];
@@ -783,8 +965,9 @@ function saveState(){
     box.appendChild(s);
   }
 })();
-(function makeIntroTeams(){
+function renderIntroTeams(){
   const box = $("introTeams");
+  box.innerHTML = "";
   TEAMS.forEach(t=>{
     const d = document.createElement("div");
     d.className = "intro-team";
@@ -792,7 +975,7 @@ function saveState(){
     d.innerHTML = `<div class="face">${t.emoji}</div><b>${t.name}</b><span>TEAM ${t.id}</span>`;
     box.appendChild(d);
   });
-})();
+}
 
 function startGame(){
   sessionStorage.setItem(STARTED_KEY, "1");
@@ -860,10 +1043,11 @@ function renderWorkers(i){
 function renderAllWorkers(){ TILES.forEach((_,i)=>renderWorkers(i)); }
 
 /* ---------- 팀 범례 ---------- */
-(function makeLegend(){
+function renderLegend(){
   $("legend").innerHTML = TEAMS.map(t=>
     `<span class="lg" style="--tc:${t.color}"><i></i>${t.emoji}</span>`).join("");
-})();
+}
+renderLegend();
 
 /* ---------- 모달 공통 ---------- */
 function openModal(id){ const m=$(id); m.classList.add("open"); m.setAttribute("aria-hidden","false"); }
@@ -1126,6 +1310,62 @@ $("rollBtn").addEventListener("click", ()=>{
   }, 900);
 });
 
+/* ---------- 게임 규칙 모달 ---------- */
+function renderRuleZoneChips(){
+  /* 팀 구역 안내 칩: 팀별 담당 4칸 표시 */
+  $("ruleZoneChips").innerHTML = TEAMS.map(t=>{
+    const names = TILES.filter(x=>x.kind==="dept" && x.home===t.id).map(x=>x.name).join(" · ");
+    return `<span class="zc" style="--tc:${t.color}">${t.emoji} ${t.name}: ${names}</span>`;
+  }).join("");
+}
+$("rulesBtn").addEventListener("click", ()=>{
+  renderRuleZoneChips();
+  openModal("rulesModal");
+});
+
+/* ---------- 팀 이름 수정 모달 ---------- */
+function renderTeamEditList(){
+  $("teamEditList").innerHTML = "";
+  TEAMS.forEach(t=>{
+    const row = document.createElement("div");
+    row.className = "te-row";
+    row.style.setProperty("--tc", t.color);
+    row.innerHTML = `
+      <div class="face">${t.emoji}</div>
+      <input type="text" maxlength="12" value="${t.name.replace(/"/g,"&quot;")}"
+        data-team="${t.id}" placeholder="${DEFAULT_TEAM_NAMES[t.id]}">
+      <span class="tag">TEAM ${t.id}</span>`;
+    $("teamEditList").appendChild(row);
+  });
+}
+function applyTeamNames(){
+  /* 팀 이름 변경 후 화면 전체에 반영 */
+  renderIntroTeams(); renderLegend(); renderPieces(); renderAllWorkers();
+}
+$("teamEditBtn").addEventListener("click", ()=>{
+  renderTeamEditList();
+  openModal("teamModal");
+});
+$("teamSaveBtn").addEventListener("click", ()=>{
+  const names = {};
+  $("teamEditList").querySelectorAll("input").forEach(inp=>{
+    const id = inp.dataset.team;
+    const v = inp.value.trim().slice(0,12);
+    names[id] = v || DEFAULT_TEAM_NAMES[id];
+  });
+  TEAMS.forEach(t=>{ t.name = names[t.id]; });
+  try{ localStorage.setItem(TEAM_NAME_KEY, JSON.stringify(names)); }catch(e){}
+  applyTeamNames();
+  closeModal("teamModal");
+  showToast("💾 팀 이름을 저장했습니다: " + TEAMS.map(t=>t.emoji+" "+t.name).join(" · "));
+});
+$("teamResetBtn").addEventListener("click", ()=>{
+  TEAMS.forEach(t=>{ t.name = DEFAULT_TEAM_NAMES[t.id]; });
+  try{ localStorage.removeItem(TEAM_NAME_KEY); }catch(e){}
+  renderTeamEditList(); applyTeamNames();
+  showToast("↺ 팀 이름을 기본값으로 되돌렸습니다.");
+});
+
 /* ---------- 황금열쇠 / 초기화 ---------- */
 $("goldBtn").addEventListener("click", ()=>{ location.href = GOLDEN_KEY_PAGE; });
 $("resetBtn").addEventListener("click", ()=>{
@@ -1145,6 +1385,8 @@ function showToast(msg){
 
 /* ---------- 시작 ---------- */
 loadState();
+renderIntroTeams();
+renderLegend();
 renderAllWorkers();
 renderPieces();
 </script>
