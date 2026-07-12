@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <!-- 임시 로고: assets/logo.png 파일을 넣으면 자동으로 원본 로고로 교체됩니다 -->
+  <defs>
+    <linearGradient id="txt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a6ea8"/>
+      <stop offset="1" stop-color="#16365e"/>
+    </linearGradient>
+  </defs>
+  <g text-anchor="middle" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif" font-weight="900">
+    <!-- 지구 -->
+    <circle cx="450" cy="140" r="104" fill="#12294a" stroke="#e6c05c" stroke-width="12"/>
+    <circle cx="450" cy="140" r="82" fill="#2f7d4f"/>
+    <path d="M395 110 q30 -26 62 -12 q34 14 60 2 q14 22 8 48 q-30 18 -62 6 q-30 -12 -58 4 q-16 -24 -10 -48z" fill="#e9f4ff" opacity=".9"/>
+    <ellipse cx="418" cy="176" rx="26" ry="12" fill="#e9f4ff" opacity=".75"/>
+    <!-- 부름마블 -->
+    <text x="450" y="392" font-size="168" letter-spacing="-4"
+      fill="#ffffff" stroke="#e6c05c" stroke-width="40" paint-order="stroke" stroke-linejoin="round">부름마블</text>
+    <text x="450" y="392" font-size="168" letter-spacing="-4"
+      fill="#ffffff" stroke="url(#txt)" stroke-width="20" paint-order="stroke" stroke-linejoin="round">부름마블</text>
+    <text x="450" y="392" font-size="168" letter-spacing="-4" fill="#ffffff">부름마블</text>
+    <!-- 연합교제 -->
+    <text x="450" y="490" font-size="72"
+      fill="#ffffff" stroke="#16365e" stroke-width="18" paint-order="stroke" stroke-linejoin="round">연합교제</text>
+    <text x="450" y="560" font-size="40" fill="#e6c05c">총무부 ✕ 친교부</text>
+  </g>
+</svg>

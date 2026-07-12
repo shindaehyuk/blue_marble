@@ -3,34 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>봉사마블 | 일꾼을 세워라!</title>
+<title>부름마블 | 연합교제</title>
 <style>
   /* ============================================================
-     🎨 디자인 토큰 — PPT(봉사마블) 웜 크림 + 골드 테마
+     🎨 디자인 토큰 — 부름마블 네이비 + 골드 테마
      ============================================================ */
   :root{
-    --paper:#fdf6e7;         /* 보드 크림색 */
-    --paper-2:#f7ecd4;
-    --line:#7c5c36;          /* 갈색 라인 */
-    --line-soft:rgba(124,92,54,.35);
-    --ink:#4a3417;           /* 진갈색 글씨 */
-    --ink-soft:#8a6f4b;
+    --navy-0:#0b1526;        /* 페이지 배경 */
+    --navy-1:#0f1e36;        /* 보드 배경 */
+    --navy-2:#152845;        /* 칸/패널 */
+    --navy-3:#1c3357;        /* 밝은 패널 */
+    --navy-line:rgba(230,192,92,.4);
 
-    --gold:#f2c14e;
+    --gold:#e6c05c;
+    --gold-light:#f6dfa0;
     --gold-deep:#a97a1e;
-    --gold-light:#ffe9ae;
 
-    --bg:#0b0a08;            /* 인트로용 웜 블랙 (황금열쇠 페이지와 통일) */
-    --panel:#141310;
-    --edge:rgba(255,255,255,.09);
-    --text:#f5f1e6;
-    --muted:#b3aca0;
+    --text:#eef4fc;
+    --muted:#9fb0c8;
 
     /* 4팀 컬러 */
     --teamA:#4d96ff;  /* 🐶 강아지팀 */
     --teamB:#ff6b9d;  /* 🐱 고양이팀 */
-    --teamC:#38b26b;  /* 🐰 토끼팀  */
-    --teamD:#f28c28;  /* 🦊 여우팀  */
+    --teamC:#3ecf7a;  /* 🐰 토끼팀  */
+    --teamD:#f7a03c;  /* 🦊 여우팀  */
 
     --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
     --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
@@ -39,20 +35,27 @@
   html,body{margin:0;}
   body{
     min-height:100vh;
-    background:#efe3c8;
+    background:var(--navy-0);
+    background-image:
+      repeating-linear-gradient(45deg,  rgba(255,255,255,.035) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 1px, transparent 1px 30px);
     font-family:var(--font);
-    color:var(--ink);
+    color:var(--text);
   }
   button{font-family:var(--font);}
 
   /* ============================================================
-     🏁 인트로 (게임 시작 전 페이지) — 황금열쇠 페이지와 같은 무드
+     🏁 인트로 (게임 시작 전 페이지)
      ============================================================ */
   #intro{
     position:fixed; inset:0; z-index:100;
-    background:var(--bg); color:var(--text);
+    background:var(--navy-0);
+    background-image:
+      repeating-linear-gradient(45deg,  rgba(255,255,255,.035) 0 1px, transparent 1px 30px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 1px, transparent 1px 30px);
+    color:var(--text);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:0; overflow:hidden;
+    overflow:hidden;
     transition:opacity .6s ease, visibility 0s linear .6s;
   }
   #intro.gone{ opacity:0; visibility:hidden; pointer-events:none; }
@@ -60,61 +63,61 @@
   .aurora{
     position:absolute; inset:-25%; z-index:0; pointer-events:none;
     background:conic-gradient(from 180deg at 50% 42%,
-      rgba(242,193,78,.12), rgba(120,80,200,.12), rgba(30,140,140,.09),
-      rgba(201,155,255,.08), rgba(242,193,78,.12));
+      rgba(230,192,92,.10), rgba(60,110,200,.14), rgba(30,140,140,.08),
+      rgba(90,140,255,.10), rgba(230,192,92,.10));
     filter:blur(70px);
     animation:auroraSpin 46s linear infinite;
   }
   @keyframes auroraSpin{ to{ transform:rotate(360deg); } }
   .stars{ position:absolute; inset:0; z-index:0; pointer-events:none; }
-  .stars i{ position:absolute; border-radius:50%; background:#fff8e6; animation:twinkle ease-in-out infinite; }
+  .stars i{ position:absolute; border-radius:50%; background:#eaf2ff; animation:twinkle ease-in-out infinite; }
   @keyframes twinkle{ 0%,100%{opacity:.1; transform:scale(.7);} 50%{opacity:.9; transform:scale(1);} }
   .vignette{ position:absolute; inset:0; z-index:0; pointer-events:none;
-    box-shadow:inset 0 0 180px 60px rgba(0,0,0,.75); }
+    box-shadow:inset 0 0 180px 60px rgba(2,6,14,.8); }
 
-  .intro-inner{ position:relative; z-index:1; text-align:center; padding:24px; max-width:720px; }
+  .intro-inner{ position:relative; z-index:1; text-align:center; padding:24px; max-width:760px; }
   .intro-eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-family:var(--mono); font-size:12px; letter-spacing:.18em;
     color:var(--gold-light);
-    background:rgba(242,193,78,.08);
-    border:1px solid rgba(242,193,78,.35);
-    padding:6px 14px; border-radius:999px; margin-bottom:22px;
+    background:rgba(230,192,92,.08);
+    border:1px solid rgba(230,192,92,.35);
+    padding:6px 14px; border-radius:999px; margin-bottom:20px;
   }
   .intro-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--gold);
     box-shadow:0 0 8px var(--gold); animation:pulse 1.6s ease-in-out infinite; }
   @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.7);} }
 
-  .intro-title{
-    font-size:clamp(46px,9vw,84px); font-weight:800; letter-spacing:-.02em; margin:0;
-    background:linear-gradient(100deg, var(--gold-deep) 0%, var(--gold) 25%, var(--gold-light) 50%, var(--gold) 75%, var(--gold-deep) 100%);
-    background-size:200% 100%;
-    -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:titleShine 5s ease-in-out infinite;
-    filter:drop-shadow(0 0 30px rgba(242,193,78,.3));
+  .intro-logo{
+    display:block; margin:0 auto;
+    width:min(78vw, 430px);
+    filter:drop-shadow(0 14px 44px rgba(230,192,92,.25));
+    animation:logoFloat 4s ease-in-out infinite;
   }
-  @keyframes titleShine{ 0%,100%{background-position:0% 0;} 50%{background-position:100% 0;} }
+  @keyframes logoFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
   .intro-slogan{
-    display:inline-block; margin:14px 0 6px;
-    font-size:clamp(17px,2.6vw,22px); font-weight:700; color:#3d2a08;
+    display:inline-block; margin:20px 0 4px;
+    font-size:clamp(16px,2.4vw,21px); font-weight:800; color:#1b2b12;
+    color:#2b1f04;
     background:linear-gradient(180deg, var(--gold-light), var(--gold));
     padding:8px 26px; border-radius:999px;
-    box-shadow:0 6px 24px rgba(242,193,78,.3), inset 0 1px 0 rgba(255,255,255,.6);
+    box-shadow:0 6px 24px rgba(230,192,92,.3), inset 0 1px 0 rgba(255,255,255,.6);
   }
   .intro-sub{ color:var(--muted); font-size:14px; margin:14px 0 0; line-height:1.7; }
 
-  .intro-teams{ display:flex; justify-content:center; gap:14px; margin:34px 0 8px; flex-wrap:wrap; }
+  .intro-teams{ display:flex; justify-content:center; gap:14px; margin:30px 0 6px; flex-wrap:wrap; }
   .intro-team{
     display:flex; flex-direction:column; align-items:center; gap:8px;
-    background:var(--panel); border:1px solid var(--edge); border-radius:16px;
+    background:var(--navy-2); border:1px solid rgba(255,255,255,.08); border-radius:16px;
     padding:16px 20px 12px; min-width:104px;
     transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
   }
-  .intro-team:hover{ transform:translateY(-5px); border-color:var(--tc); box-shadow:0 10px 30px rgba(0,0,0,.5), 0 0 18px color-mix(in srgb, var(--tc) 35%, transparent); }
+  .intro-team:hover{ transform:translateY(-5px); border-color:var(--tc);
+    box-shadow:0 10px 30px rgba(0,0,0,.5), 0 0 18px color-mix(in srgb, var(--tc) 35%, transparent); }
   .intro-team .face{
     width:54px; height:54px; border-radius:50%;
     display:flex; align-items:center; justify-content:center; font-size:30px;
-    background:color-mix(in srgb, var(--tc) 22%, #14131022);
+    background:color-mix(in srgb, var(--tc) 22%, transparent);
     border:2.5px solid var(--tc);
     animation:bob 3s ease-in-out infinite;
   }
@@ -125,24 +128,24 @@
   .intro-team b{ font-size:13.5px; color:var(--text); }
   .intro-team span{ font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.12em; }
 
-  .start-wrap{ position:relative; margin-top:30px; display:inline-block; }
+  .start-wrap{ position:relative; margin-top:26px; display:inline-block; }
   .start-wrap::before{
     content:""; position:absolute; inset:-12px -22px; border-radius:999px;
-    background:radial-gradient(closest-side, rgba(242,193,78,.25), transparent);
+    background:radial-gradient(closest-side, rgba(230,192,92,.28), transparent);
     animation:btnAura 2.6s ease-in-out infinite; pointer-events:none;
   }
   @keyframes btnAura{ 0%,100%{opacity:.5; transform:scale(.96);} 50%{opacity:1; transform:scale(1.05);} }
   .start-btn{
     position:relative; display:inline-flex; align-items:center; gap:10px;
     height:58px; padding:0 44px;
-    font-size:18px; font-weight:700; letter-spacing:-.01em; color:#221703;
+    font-size:18px; font-weight:700; letter-spacing:-.01em; color:#2b1f04;
     background:linear-gradient(180deg, var(--gold-light), var(--gold) 70%);
-    border:1px solid rgba(255,255,255,.25); border-radius:14px; cursor:pointer; overflow:hidden;
-    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 34px rgba(242,193,78,.3), inset 0 1px 0 rgba(255,255,255,.5);
+    border:1px solid rgba(255,255,255,.3); border-radius:14px; cursor:pointer; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 34px rgba(230,192,92,.3), inset 0 1px 0 rgba(255,255,255,.5);
     transition:transform .2s cubic-bezier(.3,1.3,.5,1), box-shadow .2s ease, filter .2s ease;
   }
   .start-btn:hover{ filter:brightness(1.05); transform:translateY(-2px);
-    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 44px rgba(242,193,78,.45), inset 0 1px 0 rgba(255,255,255,.6); }
+    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 44px rgba(230,192,92,.45), inset 0 1px 0 rgba(255,255,255,.6); }
   .start-btn:active{ transform:translateY(-1px) scale(.97); }
   .intro-foot{ position:absolute; bottom:20px; left:0; right:0; text-align:center;
     font-size:11px; color:var(--muted); opacity:.6; z-index:1; }
@@ -161,66 +164,85 @@
     grid-template-columns:1.32fr repeat(5,1fr) 1.32fr;
     grid-template-rows:1.32fr repeat(5,1fr) 1.32fr;
     gap:4px;
-    background:#efe0c0;
-    border:3px solid var(--line);
+    background:var(--navy-1);
+    border:3px solid var(--gold);
     border-radius:18px;
     padding:6px;
-    box-shadow:0 24px 70px rgba(74,52,23,.35), inset 0 0 0 1px rgba(255,255,255,.5);
+    box-shadow:0 24px 70px rgba(2,8,20,.7), 0 0 44px rgba(230,192,92,.12),
+      inset 0 0 0 1px rgba(255,255,255,.06);
   }
 
   /* ------- 칸 ------- */
   .tile{
     position:relative;
-    background:var(--paper);
-    border:1.5px solid var(--line-soft);
+    background:var(--navy-2);
+    border:2px solid rgba(255,255,255,.14);
     border-radius:10px;
     overflow:hidden;
     cursor:pointer;
     display:flex; flex-direction:column;
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
   }
-  .tile:hover{ transform:translateY(-2px); border-color:var(--line);
-    box-shadow:0 8px 18px rgba(74,52,23,.25); z-index:5; }
+  .tile:hover{ transform:translateY(-2px); filter:brightness(1.12);
+    box-shadow:0 8px 20px rgba(0,0,0,.5); z-index:5; }
   .tile .timg{
     flex:1; min-height:0;
     background-size:cover; background-position:center;
   }
   .tile .tname{
     flex-shrink:0;
-    font-size:clamp(9px,1.25vmin,13px); font-weight:700; color:var(--ink);
+    font-size:clamp(9px,1.25vmin,13px); font-weight:700; color:var(--text);
     text-align:center; padding:3px 2px 4px;
-    background:linear-gradient(180deg, var(--paper), var(--paper-2));
-    border-top:1px solid var(--line-soft);
+    background:linear-gradient(180deg, var(--navy-3), var(--navy-2));
+    border-top:1px solid rgba(255,255,255,.1);
     letter-spacing:-.02em; line-height:1.15;
     word-break:keep-all;
   }
+  /* 팀 구역 (일꾼을 세울 수 있는 16칸): 팀 색깔 테두리 */
+  .tile.dept{ border-color:var(--tc); }
+  .tile.dept .tname{ box-shadow:inset 0 2px 0 color-mix(in srgb, var(--tc) 55%, transparent); }
+  /* 특수 칸: 골드 테두리 */
+  .tile.corner{ border-color:var(--gold); }
   .tile.corner .tname{ font-size:clamp(10px,1.5vmin,15px); padding:4px 2px 5px; }
-  .tile.gold .tname{ background:linear-gradient(180deg,#ffedb8,#f6d878); }
-  .tile.corner{ border-width:2px; border-color:var(--line); }
-  .tile.start .tname{ background:linear-gradient(180deg,#ffe9ae,#f2c14e); }
+  .tile.gold, .tile.prize{ border-color:var(--gold); }
+  .tile.gold .tname, .tile.prize .tname{
+    background:linear-gradient(180deg,#f6dfa0,#e6c05c); color:#2b1f04;
+  }
+  .tile.start .tname{ background:linear-gradient(180deg,#f6dfa0,#e6c05c); color:#2b1f04; }
 
-  /* 출발 화살표 뱃지 */
   .tile .badge{
     position:absolute; top:4px; left:4px; z-index:2;
     font-size:clamp(8px,1.1vmin,11px); font-weight:800;
-    background:var(--gold); color:#3d2a08;
+    background:var(--gold); color:#2b1f04;
     padding:2px 7px; border-radius:999px;
-    box-shadow:0 2px 6px rgba(0,0,0,.25);
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
   }
+  /* 통행료 ×2 표시 (팀 구역에 홈팀 일꾼이 있을 때) */
+  .x2badge{
+    position:absolute; right:3px; bottom:24px; z-index:3;
+    font-size:clamp(9px,1.2vmin,12px); font-weight:900;
+    background:linear-gradient(180deg,#ffd86b,#e0a62f); color:#2b1f04;
+    padding:1px 7px; border-radius:999px;
+    box-shadow:0 2px 8px rgba(0,0,0,.5), 0 0 10px rgba(255,216,107,.5);
+    display:none;
+    animation:x2pop .4s cubic-bezier(.3,1.6,.5,1);
+  }
+  .x2badge.on{ display:block; }
+  @keyframes x2pop{ from{ transform:scale(0);} to{ transform:scale(1);} }
 
-  /* ------- 일꾼 세우기 버튼 (칸마다 작게) ------- */
+  /* ------- 일꾼 세우기 버튼 (부서 칸에만) ------- */
   .wbtn{
     position:absolute; top:3px; right:3px; z-index:3;
     width:20px; height:20px; border-radius:7px;
-    border:1.5px solid var(--line);
-    background:rgba(253,246,231,.92); color:var(--ink);
+    border:1.5px solid var(--gold);
+    background:rgba(15,30,54,.92); color:var(--gold-light);
     font-size:13px; font-weight:800; line-height:1;
     display:flex; align-items:center; justify-content:center;
     cursor:pointer; padding:0;
-    box-shadow:0 2px 6px rgba(74,52,23,.25);
-    transition:transform .15s ease, background .15s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,.45);
+    transition:transform .15s ease, background .15s ease, color .15s ease;
   }
-  .wbtn:hover{ transform:scale(1.18); background:var(--gold-light); }
+  .wbtn:hover{ transform:scale(1.18); background:var(--gold); color:#2b1f04; }
   .wbtn::before{ content:"+"; margin-top:-1px; }
 
   /* ------- 일꾼 말뚝 ------- */
@@ -229,14 +251,13 @@
     display:flex; flex-wrap:wrap; gap:2px; justify-content:flex-start;
     pointer-events:none;
   }
-  .tile.start .workers{ top:24px; }
   .worker{
     width:clamp(12px,1.7vmin,17px); height:clamp(12px,1.7vmin,17px);
     border-radius:50%;
     display:flex; align-items:center; justify-content:center;
     font-size:clamp(7px,1.05vmin,10px);
     background:var(--wc); border:1.5px solid #fff;
-    box-shadow:0 1px 4px rgba(0,0,0,.35);
+    box-shadow:0 1px 4px rgba(0,0,0,.5);
   }
 
   /* ------- 보드 중앙 ------- */
@@ -245,53 +266,60 @@
     position:relative;
     border-radius:14px;
     overflow:hidden;
-    border:2px solid var(--line);
-    background:#fff8ea;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.6), 0 10px 30px rgba(74,52,23,.2);
+    border:2px solid var(--gold);
+    background:var(--navy-1);
+    background-image:
+      repeating-linear-gradient(45deg,  rgba(255,255,255,.04) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,.04) 0 1px, transparent 1px 26px);
+    box-shadow:inset 0 0 60px rgba(2,8,20,.6), 0 10px 30px rgba(2,8,20,.5);
+    display:flex; align-items:center; justify-content:center;
   }
-  .center .cimg{
-    position:absolute; inset:0;
-    background:url('assets/image57.png') center/cover no-repeat;
+  .center .clogo{
+    width:74%; max-height:70%;
+    object-fit:contain;
+    margin-bottom:8%;
+    filter:drop-shadow(0 12px 34px rgba(230,192,92,.22));
+    pointer-events:none;
   }
   .center .cbar{
     position:absolute; left:0; right:0; bottom:0;
     display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
     padding:12px 10px 14px;
-    background:linear-gradient(180deg, transparent, rgba(43,29,8,.55) 40%);
+    background:linear-gradient(180deg, transparent, rgba(4,10,22,.75) 45%);
   }
   .cbtn{
     display:inline-flex; align-items:center; gap:7px;
     height:42px; padding:0 20px;
-    font-size:14.5px; font-weight:700; color:#3d2a08;
+    font-size:14.5px; font-weight:700; color:#2b1f04;
     background:linear-gradient(180deg, var(--gold-light), var(--gold) 75%);
     border:1px solid rgba(255,255,255,.4); border-radius:11px; cursor:pointer;
-    box-shadow:0 3px 10px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.55);
+    box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.55);
     transition:transform .18s cubic-bezier(.3,1.3,.5,1), filter .18s ease;
   }
   .cbtn:hover{ transform:translateY(-2px); filter:brightness(1.06); }
   .cbtn:active{ transform:scale(.96); }
   .cbtn.sub{
-    background:rgba(253,246,231,.9); color:var(--ink);
-    border:1.5px solid var(--line);
+    background:rgba(15,30,54,.9); color:var(--gold-light);
+    border:1.5px solid var(--navy-line);
   }
   .center .legend{
     position:absolute; top:8px; left:50%; transform:translateX(-50%);
     display:flex; gap:6px;
-    background:rgba(253,246,231,.88); border:1.5px solid var(--line);
+    background:rgba(15,30,54,.85); border:1.5px solid var(--navy-line);
     border-radius:999px; padding:4px 10px;
     backdrop-filter:blur(3px);
   }
-  .legend .lg{ display:flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; color:var(--ink); }
-  .legend .lg i{ width:10px; height:10px; border-radius:50%; background:var(--tc); display:inline-block; border:1.5px solid #fff; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .legend .lg{ display:flex; align-items:center; gap:3px; font-size:11.5px; font-weight:700; color:var(--text); }
+  .legend .lg i{ width:10px; height:10px; border-radius:50%; background:var(--tc); display:inline-block; border:1.5px solid #fff; box-shadow:0 1px 2px rgba(0,0,0,.3); }
 
   /* ------- 게임 말 (동물 캐릭터) ------- */
   #pieceLayer{ position:absolute; inset:0; z-index:20; pointer-events:none; }
   .piece{
     position:absolute; width:4.6%; aspect-ratio:1; min-width:30px;
     border-radius:50%;
-    background:radial-gradient(circle at 32% 28%, #fffdf5, #f7ecd4 72%);
+    background:radial-gradient(circle at 32% 28%, #fffdf5, #efe2c2 72%);
     border:2.5px solid var(--tc);
-    box-shadow:0 4px 10px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.5) inset;
+    box-shadow:0 4px 12px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.4) inset;
     display:flex; align-items:center; justify-content:center;
     font-size:clamp(15px,2.4vmin,24px);
     cursor:grab; pointer-events:auto; touch-action:none;
@@ -302,15 +330,14 @@
   .piece:active{ cursor:grabbing; }
   .piece.drag{
     z-index:30;
-    box-shadow:0 12px 26px rgba(0,0,0,.4), 0 0 16px color-mix(in srgb, var(--tc) 60%, transparent);
-    animation:none;
+    box-shadow:0 12px 26px rgba(0,0,0,.6), 0 0 16px color-mix(in srgb, var(--tc) 60%, transparent);
   }
-  .piece::after{ /* 팀 이름표 */
+  .piece::after{
     content:attr(data-label);
     position:absolute; top:calc(100% + 1px); left:50%; transform:translateX(-50%);
     font-size:9px; font-weight:800; color:#fff; letter-spacing:-.02em;
     background:var(--tc); border-radius:999px; padding:1px 6px;
-    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,.3);
+    white-space:nowrap; box-shadow:0 1px 4px rgba(0,0,0,.4);
     opacity:.95; pointer-events:none;
   }
 
@@ -323,91 +350,104 @@
     opacity:0; pointer-events:none; transition:opacity .25s ease;
   }
   .modal.open{ opacity:1; pointer-events:auto; }
-  .modal .mback{ position:absolute; inset:0; background:rgba(30,20,5,.55); backdrop-filter:blur(4px); }
+  .modal .mback{ position:absolute; inset:0; background:rgba(3,8,18,.7); backdrop-filter:blur(4px); }
   .mcard{
     position:relative; z-index:1;
-    width:min(92vw, 430px);
-    background:var(--paper);
-    border:2.5px solid var(--line);
+    width:min(92vw, 440px);
+    background:linear-gradient(165deg, var(--navy-2), var(--navy-1));
+    border:2px solid var(--navy-line);
     border-radius:20px;
-    box-shadow:0 30px 80px rgba(30,20,5,.5);
+    box-shadow:0 30px 80px rgba(0,0,0,.7), 0 0 50px rgba(230,192,92,.1);
     overflow:hidden;
     transform:translateY(14px) scale(.97);
     transition:transform .25s cubic-bezier(.3,1.2,.4,1);
-    max-height:88vh; overflow-y:auto;
+    max-height:90vh; overflow-y:auto;
+    color:var(--text);
   }
   .modal.open .mcard{ transform:none; }
+  /* 칸 정보 모달은 조금 크게 */
+  .mcard.big{ width:min(94vw, 560px); }
   .mclose{
     position:absolute; top:10px; right:10px; z-index:5;
     width:32px; height:32px; border-radius:50%;
-    border:1.5px solid var(--line); background:rgba(253,246,231,.95);
-    font-size:15px; font-weight:800; color:var(--ink); cursor:pointer;
+    border:1.5px solid var(--navy-line); background:rgba(15,30,54,.9);
+    font-size:15px; font-weight:800; color:var(--gold-light); cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     transition:transform .15s ease;
   }
   .mclose:hover{ transform:rotate(90deg) scale(1.08); }
 
   /* ------- 칸 정보 모달 ------- */
-  .tm-hero{ position:relative; height:150px; background-size:cover; background-position:center; }
+  .tm-hero{ position:relative; height:200px; background-size:cover; background-position:center; }
   .tm-hero::after{ content:""; position:absolute; inset:0;
-    background:linear-gradient(180deg, transparent 30%, rgba(43,29,8,.6)); }
+    background:linear-gradient(180deg, transparent 30%, rgba(6,14,28,.85)); }
   .tm-hero .tm-title{
-    position:absolute; left:18px; bottom:12px; z-index:1;
-    color:#fff8ea; font-size:26px; font-weight:800; letter-spacing:-.02em;
-    text-shadow:0 2px 10px rgba(0,0,0,.55); margin:0;
+    position:absolute; left:20px; bottom:14px; z-index:1;
+    color:#fff; font-size:30px; font-weight:800; letter-spacing:-.02em;
+    text-shadow:0 2px 12px rgba(0,0,0,.7); margin:0;
   }
   .tm-hero .tm-type{
-    position:absolute; left:18px; top:12px; z-index:1;
-    font-size:11px; font-weight:800; letter-spacing:.06em;
-    background:var(--gold); color:#3d2a08;
-    padding:3px 11px; border-radius:999px;
-    box-shadow:0 2px 8px rgba(0,0,0,.3);
+    position:absolute; left:20px; top:14px; z-index:1;
+    font-size:12px; font-weight:800; letter-spacing:.06em;
+    background:var(--gold); color:#2b1f04;
+    padding:4px 12px; border-radius:999px;
+    box-shadow:0 2px 8px rgba(0,0,0,.4);
   }
-  .tm-body{ padding:16px 18px 18px; }
-  .tm-desc{ font-size:14.5px; line-height:1.65; color:var(--ink); margin:0 0 4px; word-break:keep-all; }
+  .tm-body{ padding:18px 20px 20px; }
+  .tm-desc{ font-size:15.5px; line-height:1.65; color:var(--text); margin:0 0 4px; word-break:keep-all; }
   .tm-sec{
     margin-top:12px;
-    background:#fffdf6; border:1.5px dashed var(--line-soft); border-radius:12px;
-    padding:11px 13px;
+    background:rgba(8,17,33,.6); border:1.5px dashed var(--navy-line); border-radius:12px;
+    padding:12px 14px;
   }
   .tm-sec h4{
-    margin:0 0 5px; font-size:12px; letter-spacing:.06em; color:var(--gold-deep);
+    margin:0 0 6px; font-size:12.5px; letter-spacing:.06em; color:var(--gold-light);
     display:flex; align-items:center; gap:5px;
   }
-  .tm-sec p{ margin:0; font-size:13.5px; line-height:1.6; color:var(--ink); word-break:keep-all; }
+  .tm-sec p{ margin:0; font-size:14.5px; line-height:1.6; color:var(--text); word-break:keep-all; }
+  .tm-sec.zone{ border-style:solid; border-color:color-mix(in srgb, var(--tc) 60%, transparent); }
+  .tm-sec.zone h4{ color:var(--tc); }
+  .tm-sec .x2on{
+    display:inline-block; margin-top:6px;
+    font-size:12.5px; font-weight:900; color:#2b1f04;
+    background:linear-gradient(180deg,#ffd86b,#e0a62f);
+    padding:2px 10px; border-radius:999px;
+    box-shadow:0 0 12px rgba(255,216,107,.4);
+  }
   .tm-workers{ margin-top:12px; display:flex; gap:6px; flex-wrap:wrap; }
   .tm-workers .wk{
     display:inline-flex; align-items:center; gap:5px;
-    font-size:12.5px; font-weight:700; color:var(--ink);
-    background:#fffdf6; border:1.5px solid var(--line-soft); border-radius:999px;
-    padding:3px 10px 3px 5px;
+    font-size:13px; font-weight:700; color:var(--text);
+    background:rgba(8,17,33,.6); border:1.5px solid rgba(255,255,255,.14); border-radius:999px;
+    padding:3px 11px 3px 5px;
   }
-  .tm-workers .wk i{ width:16px; height:16px; border-radius:50%; background:var(--tc);
+  .tm-workers .wk i{ width:17px; height:17px; border-radius:50%; background:var(--tc);
     display:inline-flex; align-items:center; justify-content:center; font-size:9px; font-style:normal;
-    border:1.5px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.25); }
-  .tm-actions{ display:flex; gap:9px; margin-top:15px; }
+    border:1.5px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.4); }
+  .tm-actions{ display:flex; gap:9px; margin-top:16px; }
+  .tm-actions:empty{ display:none; }
   .mbtn{
-    flex:1; height:44px; border-radius:11px; cursor:pointer;
-    font-size:14.5px; font-weight:700;
-    border:1px solid rgba(255,255,255,.4);
+    flex:1; height:46px; border-radius:11px; cursor:pointer;
+    font-size:15px; font-weight:700;
+    border:1px solid rgba(255,255,255,.35);
     background:linear-gradient(180deg, var(--gold-light), var(--gold) 75%);
-    color:#3d2a08;
-    box-shadow:0 3px 10px rgba(74,52,23,.25), inset 0 1px 0 rgba(255,255,255,.55);
+    color:#2b1f04;
+    box-shadow:0 3px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.55);
     transition:transform .18s cubic-bezier(.3,1.3,.5,1), filter .18s ease;
   }
   .mbtn:hover{ transform:translateY(-2px); filter:brightness(1.05); }
   .mbtn:active{ transform:scale(.97); }
-  .mbtn.ghost{ background:#fffdf6; border:1.5px solid var(--line); color:var(--ink); }
+  .mbtn.ghost{ background:rgba(15,30,54,.9); border:1.5px solid var(--navy-line); color:var(--gold-light); }
 
   /* ------- 일꾼 팀 선택 모달 ------- */
   .wm-head{ padding:20px 20px 4px; text-align:center; }
-  .wm-head h3{ margin:0; font-size:20px; font-weight:800; color:var(--ink); }
-  .wm-head p{ margin:6px 0 0; font-size:13px; color:var(--ink-soft); }
-  .wm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px 18px 18px; }
+  .wm-head h3{ margin:0; font-size:20px; font-weight:800; color:var(--text); }
+  .wm-head p{ margin:6px 0 0; font-size:13px; color:var(--muted); }
+  .wm-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:16px 18px 14px; }
   .wm-team{
     position:relative;
     display:flex; align-items:center; gap:10px;
-    background:#fffdf6; border:2px solid color-mix(in srgb, var(--tc) 55%, transparent);
+    background:rgba(8,17,33,.6); border:2px solid color-mix(in srgb, var(--tc) 55%, transparent);
     border-radius:14px; padding:10px 12px; cursor:pointer;
     transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
   }
@@ -415,35 +455,41 @@
     box-shadow:0 8px 20px color-mix(in srgb, var(--tc) 30%, transparent); }
   .wm-team .face{
     width:42px; height:42px; border-radius:50%; flex-shrink:0;
-    background:color-mix(in srgb, var(--tc) 18%, #fffdf6);
+    background:color-mix(in srgb, var(--tc) 20%, transparent);
     border:2.5px solid var(--tc);
     display:flex; align-items:center; justify-content:center; font-size:23px;
   }
-  .wm-team .nm{ font-size:14px; font-weight:800; color:var(--ink); text-align:left; }
-  .wm-team .cnt{ font-size:11px; color:var(--ink-soft); font-weight:600; }
+  .wm-team .nm{ font-size:14px; font-weight:800; color:var(--text); text-align:left;
+    display:flex; align-items:center; gap:5px; }
+  .wm-team .home-tag{
+    font-size:9.5px; font-weight:900; color:#2b1f04;
+    background:linear-gradient(180deg,#ffd86b,#e0a62f);
+    padding:1px 6px; border-radius:999px;
+  }
+  .wm-team .cnt{ font-size:11px; color:var(--muted); font-weight:600; }
   .wm-team .minus{
     position:absolute; top:-8px; right:-8px;
     width:24px; height:24px; border-radius:50%;
-    border:1.5px solid #b33; background:#fff; color:#b33;
+    border:1.5px solid #e05a5a; background:var(--navy-2); color:#ff8a8a;
     font-size:14px; font-weight:800; line-height:1; cursor:pointer;
-    box-shadow:0 2px 6px rgba(0,0,0,.2);
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
     display:none; align-items:center; justify-content:center;
   }
   .wm-team.has .minus{ display:flex; }
-  .wm-team .minus:hover{ background:#ffe5e5; transform:scale(1.12); }
-  .wm-foot{ padding:0 18px 16px; font-size:11.5px; color:var(--ink-soft); text-align:center; }
+  .wm-team .minus:hover{ background:#3a1520; transform:scale(1.12); }
+  .wm-foot{ padding:0 18px 16px; font-size:11.5px; color:var(--muted); text-align:center; }
 
   /* ------- 주사위 모달 ------- */
   .dice-card{ text-align:center; padding-bottom:20px; }
   .dice-head{ padding:22px 20px 0; }
-  .dice-head h3{ margin:0; font-size:22px; font-weight:800; color:var(--ink); }
-  .dice-head p{ margin:6px 0 0; font-size:13px; color:var(--ink-soft); }
+  .dice-head h3{ margin:0; font-size:22px; font-weight:800; color:var(--text); }
+  .dice-head p{ margin:6px 0 0; font-size:13px; color:var(--muted); }
   .dice-zone{ display:flex; justify-content:center; gap:22px; padding:26px 0 8px; }
   .die{
     width:86px; height:86px; border-radius:18px;
-    background:linear-gradient(145deg, #fffdf6, #f3e7cd);
-    border:2px solid var(--line);
-    box-shadow:0 8px 20px rgba(74,52,23,.3), inset 0 2px 0 rgba(255,255,255,.8);
+    background:linear-gradient(145deg, #fffdf6, #ece0c4);
+    border:2px solid var(--gold);
+    box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 2px 0 rgba(255,255,255,.8);
     display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
     padding:13px; gap:3px;
   }
@@ -455,16 +501,16 @@
     50%{ transform:rotate(9deg) translateY(3px); }
     75%{ transform:rotate(-5deg) translateY(-5px); }
   }
-  .die .pip{ border-radius:50%; background:var(--ink); opacity:0; margin:auto; width:75%; aspect-ratio:1;
-    box-shadow:inset 0 -1.5px 2px rgba(0,0,0,.4); }
+  .die .pip{ border-radius:50%; background:#152845; opacity:0; margin:auto; width:75%; aspect-ratio:1;
+    box-shadow:inset 0 -1.5px 2px rgba(0,0,0,.5); }
   .die .pip.on{ opacity:1; }
   .dice-result{
-    min-height:34px; font-size:17px; font-weight:800; color:var(--ink);
+    min-height:34px; font-size:17px; font-weight:800; color:var(--text);
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .dice-result .tot{
-    font-size:24px; color:var(--gold-deep);
-    text-shadow:0 1px 0 rgba(255,255,255,.7);
+    font-size:24px; color:var(--gold);
+    text-shadow:0 0 14px rgba(230,192,92,.5);
   }
   .dice-result .dbl{
     font-size:12px; font-weight:800; color:#fff;
@@ -479,10 +525,10 @@
   /* ------- 토스트 ------- */
   .toast{
     position:fixed; bottom:26px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:#3d2a08; border:1px solid rgba(242,193,78,.5);
+    background:var(--navy-2); border:1px solid rgba(230,192,92,.5);
     color:var(--gold-light); padding:11px 20px; border-radius:999px;
     font-size:13.5px; font-weight:600; z-index:300; opacity:0; pointer-events:none;
-    transition:all .3s ease; box-shadow:0 10px 30px rgba(0,0,0,.35);
+    transition:all .3s ease; box-shadow:0 10px 30px rgba(0,0,0,.55);
     max-width:86vw; text-align:center;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
@@ -493,6 +539,7 @@
     .wbtn{ width:17px; height:17px; font-size:11px; }
     .cbtn{ height:37px; padding:0 13px; font-size:12.5px; }
     .center .legend{ display:none; }
+    .tm-hero{ height:160px; }
   }
 </style>
 </head>
@@ -506,8 +553,8 @@
   <div class="stars" id="introStars"></div>
   <div class="vignette"></div>
   <div class="intro-inner">
-    <div class="intro-eyebrow"><span class="dot"></span>2026.07.17 친교부 &amp; 총무부 연합교제</div>
-    <h1 class="intro-title">봉사마블</h1>
+    <div class="intro-eyebrow"><span class="dot"></span>2026.07.17 총무부 ✕ 친교부 연합교제</div>
+    <img class="intro-logo" src="assets/logo.png" onerror="this.onerror=null;this.src='assets/logo.svg'" alt="부름마블 로고">
     <div class="intro-slogan">⛪ 일꾼을 세워라!</div>
     <p class="intro-sub">주사위를 굴려 교회 부서들을 돌며 미니게임으로 달란트를 모으고,<br>각 부서에 우리 팀의 일꾼을 세우세요!</p>
 
@@ -517,7 +564,7 @@
       <button class="start-btn" id="startBtn">🎲 게임 시작</button>
     </div>
   </div>
-  <div class="intro-foot">봉사마블 · 부루마블 스타일 보드게임</div>
+  <div class="intro-foot">부름마블 · 부루마블 스타일 보드게임</div>
 </div>
 
 <!-- ============================================================
@@ -527,7 +574,7 @@
   <div class="board-wrap">
     <div id="board">
       <div class="center">
-        <div class="cimg"></div>
+        <img class="clogo" src="assets/logo.png" onerror="this.onerror=null;this.src='assets/logo.svg'" alt="부름마블">
         <div class="legend" id="legend"></div>
         <div class="cbar">
           <button class="cbtn" id="diceOpenBtn">🎲 주사위 굴리기</button>
@@ -545,7 +592,7 @@
 ============================================================ -->
 <div class="modal" id="tileModal" aria-hidden="true">
   <div class="mback" data-close></div>
-  <div class="mcard">
+  <div class="mcard big">
     <button class="mclose" data-close>✕</button>
     <div class="tm-hero" id="tmHero">
       <span class="tm-type" id="tmType"></span>
@@ -553,6 +600,10 @@
     </div>
     <div class="tm-body">
       <p class="tm-desc" id="tmDesc"></p>
+      <div class="tm-sec zone" id="tmZoneSec">
+        <h4 id="tmZoneTitle">🏠 팀 구역</h4>
+        <p id="tmZone"></p>
+      </div>
       <div class="tm-sec" id="tmGameSec">
         <h4>🎮 미니게임</h4>
         <p id="tmGame"></p>
@@ -582,7 +633,7 @@
       <p id="wmTileName"></p>
     </div>
     <div class="wm-grid" id="wmGrid"></div>
-    <div class="wm-foot">팀 카드를 누르면 일꾼 1명 추가 · 오른쪽 위 <b style="color:#b33">−</b> 버튼으로 제거</div>
+    <div class="wm-foot">팀 카드를 누르면 일꾼 1명 추가 · 오른쪽 위 <b style="color:#ff8a8a">−</b> 버튼으로 제거</div>
   </div>
 </div>
 
@@ -619,69 +670,70 @@
      name : 칸 이름
      img  : assets 폴더 이미지
      kind : start(출발) | island(사망의골짜기) | hq(총무부) | bazaar(바자회)
-            | dept(부서) | gold(황금열쇠)
+            | dept(부서·일꾼 가능) | gold(황금열쇠) | prize(상급)
+     home : 부서 칸의 홈팀 (A/B/C/D) — 이 팀이 일꾼을 세우면 통행료 ×2
      desc : 칸 설명   game/win : 미니게임 방법/승리 조건 (부서 칸)
 ================================================================ */
 const TILES = [
   { name:"본당 로비",     img:"assets/image77.png", kind:"start",
     desc:"출발 칸입니다! 이곳을 지날 때마다 달란트를 지급받습니다." },
-  { name:"은장회",        img:"assets/image65.png", kind:"dept",
+  { name:"은장회",        img:"assets/image65.png", kind:"dept", home:"A",
     desc:"은장회 칸에 도착했습니다.",
     game:"잇몸으로 말해요 — 잇몸 안 보이게 웃기기 게임", win:"1분 동안 먼저 웃는 팀이 패배" },
-  { name:"영유아부",      img:"assets/image62.png", kind:"dept",
+  { name:"영유아부",      img:"assets/image62.png", kind:"dept", home:"A",
     desc:"영유아부 칸에 도착했습니다.",
     game:"쪽쪽이 퀴즈", win:"진행자 안내에 따라 승패 결정" },
-  { name:"어린이문화부",  img:"assets/image63.png", kind:"dept",
+  { name:"어린이문화부",  img:"assets/image63.png", kind:"dept", home:"A",
     desc:"어린이문화부 칸에 도착했습니다.",
     game:"공 굴리고 타이밍 맞춰서 머리로 공 멈추기", win:"돌아가면서 진행, 먼저 승리하는 팀이 승리" },
-  { name:"교회학교",      img:"assets/image64.png", kind:"dept",
+  { name:"교회학교",      img:"assets/image64.png", kind:"dept", home:"A",
     desc:"교회학교 칸에 도착했습니다.",
     game:"타이머 맞추기 — 초반 3초만 같이 세고, 이후 마음속으로 세다가 30초라고 생각할 때 손들기",
     win:"30초에 더 가깝게 손을 든 팀이 승리" },
-  { name:"청년회",        img:"assets/image61.png", kind:"dept",
+  { name:"청년회",        img:"assets/image61.png", kind:"dept", home:"B",
     desc:"청년회 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"사망의 골짜기", img:"assets/image78.png", kind:"island",
     desc:"3턴 동안 정지! 더블 주사위, 탈출권, 황금열쇠로 탈출할 수 있습니다." },
-  { name:"친교부",        img:"assets/image66.png", kind:"dept",
+  { name:"친교부",        img:"assets/image66.png", kind:"dept", home:"B",
     desc:"친교부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
-  { name:"갈릴리학교",    img:"assets/image67.png", kind:"dept",
+  { name:"갈릴리학교",    img:"assets/image67.png", kind:"dept", home:"B",
     desc:"갈릴리학교 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
-  { name:"농선부",        img:"assets/image68.png", kind:"dept",
+  { name:"농선부",        img:"assets/image68.png", kind:"dept", home:"B",
     desc:"농선부 칸에 도착했습니다.",
     game:"몸으로 말해요 — 제시어를 릴레이로 앞사람에게 몸으로 설명, 마지막 사람이 맞추기",
     win:"제한 시간 안에 많이 맞추면 승리" },
-  { name:"미화부",        img:"assets/image69.png", kind:"dept",
+  { name:"미화부",        img:"assets/image69.png", kind:"dept", home:"C",
     desc:"미화부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"총무부",        img:"assets/image79.png", kind:"hq",
     desc:"게임 진행 본부입니다. 황금열쇠의 지시로 이동해 오기도 합니다." },
-  { name:"서적부",        img:"assets/image70.png", kind:"dept",
+  { name:"서적부",        img:"assets/image70.png", kind:"dept", home:"C",
     desc:"서적부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
-  { name:"미선부",        img:"assets/image71.png", kind:"dept",
+  { name:"미선부",        img:"assets/image71.png", kind:"dept", home:"C",
     desc:"미선부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"황금열쇠",      img:"assets/image58.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
-  { name:"찬양대",        img:"assets/image72.png", kind:"dept",
+  { name:"찬양대",        img:"assets/image72.png", kind:"dept", home:"C",
     desc:"찬양대 칸에 도착했습니다.",
     game:"찬양 전주 3초만 듣고 어떤 찬양인지 알아맞히기", win:"많이 맞힌 팀이 승리" },
-  { name:"영선부",        img:"assets/image73.png", kind:"dept",
+  { name:"영선부",        img:"assets/image73.png", kind:"dept", home:"D",
     desc:"영선부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"바자회",        img:"assets/image80.png", kind:"bazaar",
     desc:"세계 선교를 위한 바자회 날입니다! 특별 이벤트 칸." },
-  { name:"시설관리부",    img:"assets/image76.png", kind:"dept",
+  { name:"시설관리부",    img:"assets/image76.png", kind:"dept", home:"D",
     desc:"시설관리부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
-  { name:"꽃꽂이부",      img:"assets/image75.png", kind:"dept",
+  { name:"꽃꽂이부",      img:"assets/image75.png", kind:"dept", home:"D",
     desc:"꽃꽂이부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
-  { name:"황금열쇠",      img:"assets/image59.png", kind:"gold",
-    desc:"황금열쇠 칸! 보물상자 카드를 뽑아 지시를 따르세요." },
-  { name:"주차수송부",    img:"assets/image74.png", kind:"dept",
+  { name:"상급",          img:"assets/image59.png", kind:"prize",
+    desc:"상급 칸! 도착하면 달란트를 획득합니다." },
+  { name:"주차수송부",    img:"assets/image74.png", kind:"dept", home:"D",
     desc:"주차수송부 칸에 도착했습니다.", game:"미니게임 준비 중", win:"진행자 안내에 따라 승패 결정" },
 ];
 
-const KIND_LABEL = { start:"출발", island:"특수 칸", hq:"진행 본부", bazaar:"특수 칸", dept:"부서", gold:"황금열쇠" };
+const KIND_LABEL = { start:"출발", island:"특수 칸", hq:"진행 본부", bazaar:"특수 칸", dept:"부서", gold:"황금열쇠", prize:"상급" };
 
 /* 4팀 (동물 캐릭터 말) */
 const TEAMS = [
@@ -695,6 +747,7 @@ const GOLDEN_KEY_PAGE = "golden_key.html";
 const WORKER_KEY = "bm_workers_v1", PIECE_KEY = "bm_pieces_v1", STARTED_KEY = "bm_started_v1";
 
 const $ = id => document.getElementById(id);
+function teamOf(id){ return TEAMS.find(t=>t.id===id); }
 
 /* ---------- 상태 (브라우저에 자동 저장) ---------- */
 let workers = {};   // { tileIndex: ["A","B",...] }
@@ -703,6 +756,10 @@ let pieces  = {};   // { teamId: {x,y} (% 좌표) }
 function loadState(){
   try{ const w = JSON.parse(localStorage.getItem(WORKER_KEY)); if(w && typeof w==="object") workers = w; }catch(e){}
   try{ const p = JSON.parse(localStorage.getItem(PIECE_KEY));  if(p && typeof p==="object") pieces  = p; }catch(e){}
+  /* 일꾼을 세울 수 없는 칸에 저장돼 있던 일꾼은 정리 */
+  Object.keys(workers).forEach(k=>{
+    if(!TILES[k] || TILES[k].kind!=="dept") delete workers[k];
+  });
 }
 function saveState(){
   try{
@@ -766,34 +823,37 @@ const tileEls = [];
 (function buildBoard(){
   TILES.forEach((t, i)=>{
     const [r,c] = gridPos(i);
+    const isDept = t.kind==="dept";
     const el = document.createElement("div");
-    el.className = "tile " + t.kind + ((t.kind!=="dept" && t.kind!=="gold") ? " corner" : "");
+    el.className = "tile " + t.kind + ((t.kind!=="dept" && t.kind!=="gold" && t.kind!=="prize") ? " corner" : "");
     el.style.gridArea = `${r}/${c}`;
+    if(isDept) el.style.setProperty("--tc", teamOf(t.home).color);
     el.innerHTML = `
       ${t.kind==="start" ? '<span class="badge">▶ 출발</span>' : ""}
-      <button class="wbtn" title="일꾼 세우기" aria-label="${t.name}에 일꾼 세우기"></button>
+      ${isDept ? `<button class="wbtn" title="일꾼 세우기" aria-label="${t.name}에 일꾼 세우기"></button>` : ""}
       <div class="timg" style="background-image:url('${t.img}')"></div>
       <div class="tname">${t.name}</div>
-      <div class="workers"></div>`;
+      <div class="workers"></div>
+      ${isDept ? '<span class="x2badge">×2</span>' : ""}`;
     el.addEventListener("click", ()=>openTileModal(i));
-    el.querySelector(".wbtn").addEventListener("click", e=>{
-      e.stopPropagation();
-      openWorkerModal(i);
-    });
+    const wb = el.querySelector(".wbtn");
+    if(wb) wb.addEventListener("click", e=>{ e.stopPropagation(); openWorkerModal(i); });
     boardEl.insertBefore(el, boardEl.querySelector(".center"));
     tileEls.push(el);
   });
 })();
 
-function teamOf(id){ return TEAMS.find(t=>t.id===id); }
-
 function renderWorkers(i){
+  const t = TILES[i];
   const box = tileEls[i].querySelector(".workers");
   const list = workers[i] || [];
   box.innerHTML = list.map(id=>{
-    const t = teamOf(id);
-    return `<span class="worker" style="--wc:${t.color}" title="${t.name} 일꾼">${t.emoji}</span>`;
+    const tm = teamOf(id);
+    return `<span class="worker" style="--wc:${tm.color}" title="${tm.name} 일꾼">${tm.emoji}</span>`;
   }).join("");
+  /* 홈팀 일꾼이 세워졌으면 통행료 ×2 표시 */
+  const x2 = tileEls[i].querySelector(".x2badge");
+  if(x2) x2.classList.toggle("on", t.kind==="dept" && list.includes(t.home));
 }
 function renderAllWorkers(){ TILES.forEach((_,i)=>renderWorkers(i)); }
 
@@ -818,10 +878,26 @@ let currentTile = null;
 function openTileModal(i){
   currentTile = i;
   const t = TILES[i];
+  const isDept = t.kind==="dept";
   $("tmHero").style.backgroundImage = `url('${t.img}')`;
   $("tmName").textContent = t.name;
   $("tmType").textContent = KIND_LABEL[t.kind];
   $("tmDesc").textContent = t.desc || "";
+
+  /* 팀 구역 + 통행료 ×2 안내 */
+  const zoneSec = $("tmZoneSec");
+  if(isDept){
+    const home = teamOf(t.home);
+    const active = (workers[i]||[]).includes(t.home);
+    zoneSec.style.display = "";
+    zoneSec.style.setProperty("--tc", home.color);
+    $("tmZoneTitle").textContent = `🏠 ${home.emoji} ${home.name} 구역`;
+    $("tmZone").innerHTML =
+      `이 칸은 <b>${home.name}</b> 구역입니다. ${home.name}이 일꾼을 세우면 통행료가 <b>2배</b>가 됩니다.` +
+      (active ? `<br><span class="x2on">⚡ 지금 통행료 ×2 적용 중!</span>` : "");
+  }else{
+    zoneSec.style.display = "none";
+  }
 
   const hasGame = !!t.game;
   $("tmGameSec").style.display = hasGame ? "" : "none";
@@ -830,11 +906,17 @@ function openTileModal(i){
   if(t.win)   $("tmWin").textContent  = t.win;
 
   const list = workers[i] || [];
-  $("tmWorkers").innerHTML = TEAMS.map(tm=>{
-    const n = list.filter(id=>id===tm.id).length;
-    return n ? `<span class="wk" style="--tc:${tm.color}"><i>${tm.emoji}</i>${tm.name} ×${n}</span>` : "";
-  }).join("") || `<span class="wk" style="--tc:#d8c9a8">🙌 아직 세워진 일꾼이 없습니다</span>`;
+  if(isDept){
+    $("tmWorkers").style.display = "";
+    $("tmWorkers").innerHTML = TEAMS.map(tm=>{
+      const n = list.filter(id=>id===tm.id).length;
+      return n ? `<span class="wk" style="--tc:${tm.color}"><i>${tm.emoji}</i>${tm.name} ×${n}</span>` : "";
+    }).join("") || `<span class="wk" style="--tc:#5a6f92">🙌 아직 세워진 일꾼이 없습니다</span>`;
+  }else{
+    $("tmWorkers").style.display = "none";
+  }
 
+  $("tmWorkerBtn").style.display = isDept ? "" : "none";
   $("tmGoldBtn").style.display = t.kind==="gold" ? "" : "none";
   openModal("tileModal");
 }
@@ -844,30 +926,41 @@ $("tmWorkerBtn").addEventListener("click", ()=>{
 });
 $("tmGoldBtn").addEventListener("click", ()=>{ location.href = GOLDEN_KEY_PAGE; });
 
-/* ---------- 일꾼 팀 선택 모달 ---------- */
+/* ---------- 일꾼 팀 선택 모달 (부서 칸 16곳만) ---------- */
 let workerTile = null;
 function openWorkerModal(i){
+  if(TILES[i].kind!=="dept"){
+    showToast("🚫 이 칸에는 일꾼을 세울 수 없습니다.");
+    return;
+  }
   workerTile = i;
   $("wmTileName").textContent = `「${TILES[i].name}」 칸에 어느 팀 일꾼을 세울까요?`;
   renderWorkerGrid();
   openModal("workerModal");
 }
 function renderWorkerGrid(){
+  const tile = TILES[workerTile];
   const list = workers[workerTile] || [];
   $("wmGrid").innerHTML = "";
   TEAMS.forEach(t=>{
     const n = list.filter(id=>id===t.id).length;
+    const isHome = tile.home===t.id;
     const d = document.createElement("div");
     d.className = "wm-team" + (n ? " has" : "");
     d.style.setProperty("--tc", t.color);
     d.innerHTML = `
       <div class="face">${t.emoji}</div>
-      <div><div class="nm">${t.name}</div><div class="cnt">일꾼 ${n}명</div></div>
+      <div>
+        <div class="nm">${t.name}${isHome ? '<span class="home-tag">×2 구역</span>' : ""}</div>
+        <div class="cnt">일꾼 ${n}명</div>
+      </div>
       <button class="minus" title="일꾼 1명 제거">−</button>`;
     d.addEventListener("click", ()=>{
       (workers[workerTile] = workers[workerTile] || []).push(t.id);
       saveState(); renderWorkers(workerTile); renderWorkerGrid();
-      showToast(`${t.emoji} ${t.name} 일꾼을 「${TILES[workerTile].name}」에 세웠습니다!`);
+      showToast(isHome
+        ? `⚡ ${t.emoji} ${t.name} 홈구역! 「${TILES[workerTile].name}」 통행료 ×2!`
+        : `${t.emoji} ${t.name} 일꾼을 「${TILES[workerTile].name}」에 세웠습니다!`);
     });
     d.querySelector(".minus").addEventListener("click", e=>{
       e.stopPropagation();
@@ -930,6 +1023,60 @@ function enableDrag(el){
   });
 }
 
+/* ---------- 주사위 사운드 (Web Audio) ---------- */
+let audioCtx;
+function actx(){ return audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)(); }
+let _noiseBuf = null;
+function diceTick(){
+  /* 주사위가 컵/판에 부딪히는 '달그락' 소리 */
+  try{
+    const c = actx(), now = c.currentTime;
+    if(!_noiseBuf){
+      _noiseBuf = c.createBuffer(1, Math.floor(c.sampleRate*0.04), c.sampleRate);
+      const d = _noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    }
+    const src = c.createBufferSource(); src.buffer = _noiseBuf;
+    src.playbackRate.value = .8 + Math.random()*.7;
+    const bp = c.createBiquadFilter(); bp.type = "bandpass";
+    bp.frequency.value = 1500 + Math.random()*1600; bp.Q.value = 1.2;
+    const g = c.createGain(); g.gain.value = .35 + Math.random()*.25;
+    src.connect(bp).connect(g).connect(c.destination); src.start(now);
+    /* 나무판 노크 저음 */
+    const o = c.createOscillator(), og = c.createGain();
+    o.type = "triangle";
+    o.frequency.setValueAtTime(220 + Math.random()*140, now);
+    o.frequency.exponentialRampToValueAtTime(90, now + .04);
+    og.gain.setValueAtTime(.14, now);
+    og.gain.exponentialRampToValueAtTime(.0001, now + .07);
+    o.connect(og).connect(c.destination); o.start(now); o.stop(now + .08);
+  }catch(e){}
+}
+function diceLand(isDouble){
+  /* 멈출 때 '탁' + 더블이면 짧은 차임 */
+  try{
+    const c = actx(), now = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = "square";
+    o.frequency.setValueAtTime(300, now);
+    o.frequency.exponentialRampToValueAtTime(70, now + .09);
+    g.gain.setValueAtTime(.3, now);
+    g.gain.exponentialRampToValueAtTime(.0001, now + .16);
+    o.connect(g).connect(c.destination); o.start(now); o.stop(now + .17);
+    if(isDouble){
+      [659.25, 830.6, 987.77].forEach((f,i)=>{
+        const oo = c.createOscillator(), gg = c.createGain();
+        oo.type = "sine"; oo.frequency.value = f;
+        gg.gain.setValueAtTime(0, now + .12 + i*.08);
+        gg.gain.linearRampToValueAtTime(.09, now + .12 + i*.08 + .02);
+        gg.gain.exponentialRampToValueAtTime(.0001, now + .12 + i*.08 + .5);
+        oo.connect(gg).connect(c.destination);
+        oo.start(now + .12 + i*.08); oo.stop(now + .12 + i*.08 + .5);
+      });
+    }
+  }catch(e){}
+}
+
 /* ---------- 주사위 모달 ---------- */
 /* 주사위 눈 배치 (3×3 그리드에서 켤 pip 위치) */
 const PIP_MAP = {
@@ -951,6 +1098,9 @@ $("diceOpenBtn").addEventListener("click", ()=>openModal("diceModal"));
 $("rollBtn").addEventListener("click", ()=>{
   if(rolling) return;
   rolling = true;
+  /* 브라우저 정책상 사용자 제스처 안에서 오디오를 깨워야 소리가 납니다 */
+  try{ const a = actx(); if(a.state==="suspended") a.resume(); }catch(e){}
+
   const d1=$("die1"), d2=$("die2"), res=$("diceResult"), btn=$("rollBtn");
   btn.disabled = true;
   d1.classList.add("rolling"); d2.classList.add("rolling");
@@ -959,6 +1109,7 @@ $("rollBtn").addEventListener("click", ()=>{
   const iv = setInterval(()=>{
     showFace(d1, 1+Math.floor(Math.random()*6));
     showFace(d2, 1+Math.floor(Math.random()*6));
+    diceTick();
   }, 90);
 
   setTimeout(()=>{
@@ -966,6 +1117,7 @@ $("rollBtn").addEventListener("click", ()=>{
     const a = 1+Math.floor(Math.random()*6), b = 1+Math.floor(Math.random()*6);
     showFace(d1,a); showFace(d2,b);
     d1.classList.remove("rolling"); d2.classList.remove("rolling");
+    diceLand(a===b);
     res.innerHTML = `${a} + ${b} = <span class="tot">${a+b}</span>칸 이동!` +
       (a===b ? ` <span class="dbl">🎉 더블! 한 번 더</span>` : "");
     rolling = false; btn.disabled = false;
@@ -993,7 +1145,6 @@ function showToast(msg){
 loadState();
 renderAllWorkers();
 renderPieces();
-window.addEventListener("resize", ()=>{ /* %(퍼센트) 좌표라 별도 처리 불필요 */ });
 </script>
 </body>
 </html>
