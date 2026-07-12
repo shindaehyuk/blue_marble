@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>황금열쇠 뽑기 | 부루마블</title>
+<style>
+  /* ============================================================
+     🎨 디자인 토큰 (색상/크기를 바꾸려면 여기만 수정하세요)
+     ============================================================ */
+  :root{
+    --bg:#0b0a08;            /* 웜 블랙 */
+    --panel:#141310;
+    --panel-2:#1d1b15;
+    --edge: rgba(255,255,255,0.09);
+
+    --gold:#f2c14e;
+    --gold-light:#ffe9ae;
+    --gold-deep:#a97a1e;
+
+    --text:#f5f1e6;
+    --muted:#b3aca0;   /* 웜 그레이 (모바일 대비 강화) */
+
+    --plus:#7bd99a;
+    --minus:#ff7a7a;
+    --move:#7ab7ff;
+    --special:#c99bff;
+
+    --ring-z: 320px;           /* 카드 링 반지름 (간격을 더 벌리려면 키우세요) */
+    --card-w: 150px;
+    --card-h: 214px;
+
+    --radius-lg: 22px;
+    --radius-md: 14px;
+
+    --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font);
+    display:flex; flex-direction:column; align-items:center;
+    overflow-x:hidden;
+  }
+
+  /* ------- 배경: 그리드 + 떠다니는 금가루 ------- */
+  /* 오로라 레이어 */
+  .aurora{
+    position:fixed; inset:-25%; z-index:0; pointer-events:none;
+    background:conic-gradient(from 180deg at 50% 42%,
+      rgba(242,193,78,.10), rgba(120,80,200,.12), rgba(30,140,140,.09),
+      rgba(201,155,255,.08), rgba(242,193,78,.10));
+    filter:blur(70px);
+    animation:auroraSpin 46s linear infinite;
+  }
+  .aurora.rev{
+    inset:-35%;
+    background:conic-gradient(from 20deg at 45% 55%,
+      rgba(30,140,140,.07), rgba(242,193,78,.07), rgba(120,80,200,.09), rgba(30,140,140,.07));
+    animation:auroraSpin 64s linear infinite reverse;
+  }
+  @keyframes auroraSpin{ to{ transform:rotate(360deg); } }
+
+  /* 별빛 */
+  .stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .stars i{
+    position:absolute; border-radius:50%;
+    background:#fff8e6;
+    animation:twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:.1; transform:scale(.7); }
+    50%{ opacity:.9; transform:scale(1); }
+  }
+
+  /* 별똥별 */
+  .shooting{
+    position:fixed; z-index:0; pointer-events:none;
+    width:110px; height:1.5px;
+    background:linear-gradient(90deg, rgba(255,240,200,.9), transparent);
+    border-radius:999px;
+    filter:drop-shadow(0 0 5px rgba(255,233,174,.8));
+    transform:rotate(-35deg);
+    opacity:0;
+    animation:shoot 9s linear infinite;
+  }
+  .shooting.s2{ animation-delay:5.2s; animation-duration:11s; }
+  @keyframes shoot{
+    0%{ opacity:0; transform:translate(0,0) rotate(-35deg); }
+    2%{ opacity:1; }
+    8%{ opacity:0; transform:translate(-340px,238px) rotate(-35deg); }
+    100%{ opacity:0; transform:translate(-340px,238px) rotate(-35deg); }
+  }
+
+  /* 떠다니는 블러 오브 + 비네트 */
+  .bg-orb{ position:fixed; border-radius:50%; filter:blur(90px); pointer-events:none; z-index:0; }
+  .orb1{ width:560px; height:560px; top:-180px; left:-120px;
+    background:radial-gradient(circle, rgba(244,203,94,.32), transparent 70%);
+    animation:orbDrift 18s ease-in-out infinite; }
+  .orb2{ width:520px; height:520px; bottom:-160px; right:-140px;
+    background:radial-gradient(circle, rgba(124,92,255,.24), transparent 70%);
+    animation:orbDrift 22s ease-in-out infinite reverse; }
+  .orb3{ width:380px; height:380px; top:38%; left:60%;
+    background:radial-gradient(circle, rgba(45,212,191,.13), transparent 70%);
+    animation:orbDrift 26s ease-in-out infinite; }
+  @keyframes orbDrift{ 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(40px,26px) scale(1.08);} }
+  .vignette{ position:fixed; inset:0; z-index:0; pointer-events:none;
+    box-shadow:inset 0 0 180px 60px rgba(0,0,0,.75); }
+
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:radial-gradient(rgba(242,193,78,.16) 1px, transparent 1.6px);
+    background-size:26px 26px;
+    -webkit-mask-image:radial-gradient(circle at 50% 32%, black, transparent 78%);
+            mask-image:radial-gradient(circle at 50% 32%, black, transparent 78%);
+    animation:gridDrift 36s linear infinite;
+  }
+  @keyframes gridDrift{ to{ background-position:52px 52px; } }
+
+  .dust{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+  .dust i{
+    position:absolute; bottom:-10px;
+    width:4px; height:4px; border-radius:50%;
+    background:var(--gold-light);
+    box-shadow:0 0 6px 1px rgba(242,193,78,.7);
+    opacity:0;
+    animation:dustUp linear infinite;
+  }
+  @keyframes dustUp{
+    0%{ transform:translateY(0) translateX(0) scale(1); opacity:0; }
+    10%{ opacity:.7; }
+    90%{ opacity:.15; }
+    100%{ transform:translateY(-105vh) translateX(var(--dx,0)) scale(.3); opacity:0; }
+  }
+
+  /* ------- 헤더 ------- */
+  /* 필름 그레인 */
+  .grain{
+    position:fixed; inset:-50%; z-index:1; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity:.05;
+    mix-blend-mode:overlay;
+    animation:grainShift 1.2s steps(6) infinite;
+  }
+  @keyframes grainShift{
+    0%{ transform:translate(0,0); } 20%{ transform:translate(-3%,2%); }
+    40%{ transform:translate(2%,-3%); } 60%{ transform:translate(-2%,-2%); }
+    80%{ transform:translate(3%,2%); } 100%{ transform:translate(0,0); }
+  }
+
+  /* 스테이지 뒤 은은한 무대 조명 */
+  .stage::before{
+    content:""; position:absolute; inset:-10% -5%;
+    background:radial-gradient(55% 70% at 50% 55%, rgba(242,193,78,.10), transparent 70%);
+    pointer-events:none;
+  }
+
+  header{ position:relative; z-index:2; text-align:center; margin-top:52px; padding:0 20px; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    color:var(--gold-light);
+    background:rgba(242,193,78,0.08);
+    border:1px solid rgba(242,193,78,0.35);
+    padding:6px 14px; border-radius:999px; margin-bottom:18px;
+  }
+  .eyebrow .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 8px var(--gold);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(.7);} }
+
+  h1{
+    font-size:clamp(34px,6vw,54px); font-weight:800; letter-spacing:-0.02em;
+    margin:0 0 10px;
+    background:linear-gradient(100deg, var(--gold-deep) 0%, var(--gold) 25%, var(--gold-light) 50%, var(--gold) 75%, var(--gold-deep) 100%);
+    background-size:200% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:titleShine 5s ease-in-out infinite;
+    filter:drop-shadow(0 0 26px rgba(242,193,78,0.3));
+  }
+  @keyframes titleShine{ 0%,100%{background-position:0% 0;} 50%{background-position:100% 0;} }
+  header p{ margin:0 auto; max-width:420px; color:var(--muted); font-size:15px; line-height:1.6; }
+
+  /* ============================================================
+     🌀 3D 카드 링
+     ============================================================ */
+  .stage{
+    position:relative; z-index:1;
+    width:100%; max-width:860px; height:340px;
+    margin:46px 0 6px;
+    perspective:1600px;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .5s ease;
+  }
+  .stage.hidden-stage{ opacity:0; pointer-events:none; }
+
+  .ring{
+    position:relative;
+    width:var(--card-w); height:var(--card-h);
+    transform-style:preserve-3d;
+    will-change:transform;
+  }
+
+  .ring-card{
+    position:absolute; inset:0;
+    width:var(--card-w); height:var(--card-h);
+    border-radius:var(--radius-md);
+    transform:rotateY(var(--ang)) translateZ(var(--ring-z));
+    transition:opacity .5s ease, filter .5s ease;
+    backface-visibility:hidden;
+  }
+  .stage:not(.drawing) .ring-card{ transition:transform .3s ease, opacity .5s ease, filter .5s ease; }
+  .stage:not(.drawing) .ring-card:hover{ transform:rotateY(var(--ang)) translateZ(calc(var(--ring-z) + 16px)); }
+  .stage:not(.drawing) .ring-card:hover .card-back-design{
+    border-color:rgba(255,240,190,.9);
+    box-shadow:0 16px 44px rgba(0,0,0,.55), 0 0 30px rgba(255,215,107,.45),
+      inset 0 1px 0 rgba(255,255,255,.65);
+  }
+
+  /* 선택되지 않은 카드는 흐려짐 */
+  .stage.dimmed .ring-card:not(.chosen){ opacity:.06; filter:blur(3px); }
+
+  /* 당첨 카드: 은은한 금빛 파동 */
+  .ring-card.chosen .card-back-design{
+    animation:chosenGlow 1s ease-in-out infinite;
+    border-color:rgba(255,243,200,.95);
+  }
+  @keyframes chosenGlow{
+    0%,100%{ box-shadow:0 10px 30px rgba(0,0,0,.5), 0 0 26px rgba(255,215,107,.45); }
+    50%{ box-shadow:0 10px 30px rgba(0,0,0,.5), 0 0 60px rgba(255,224,130,.9); }
+  }
+
+  /* 당첨 카드가 화면 앞으로 날아옴 */
+  .ring-card.zoom{
+    transition:transform .75s cubic-bezier(.25,.8,.25,1);
+    transform:rotateY(var(--ang)) translateZ(calc(var(--ring-z) + 420px)) scale(1.35);
+    z-index:5;
+  }
+
+  /* ------- 카드 디자인: 메탈릭 골드 카드 (링/플립 공용) ------- */
+  .card-back-design{
+    position:relative; width:100%; height:100%;
+    border-radius:inherit;
+    background:linear-gradient(128deg,
+      #8f6a16 0%, #d8ab35 12%, #f8dd85 26%, #fff4c6 36%,
+      #f0c752 48%, #b8891f 62%, #e5bc48 76%, #fdf0b6 88%, #9c7318 100%);
+    border:1px solid rgba(255,252,235,.55);
+    outline:1px solid rgba(110,76,12,.55);
+    box-shadow:
+      0 14px 36px rgba(0,0,0,.55),
+      0 0 24px rgba(242,193,78,.14),
+      inset 0 1px 0 rgba(255,255,255,.75),
+      inset 0 -1px 0 rgba(96,64,10,.55);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    overflow:hidden;
+    color:#452b08;
+  }
+  .card-back-design::before{ /* 좌상단 부드러운 하이라이트 */
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(95% 55% at 28% 8%, rgba(255,252,235,.55), transparent 58%);
+  }
+  .cbd-sheen{ /* 금속 광택 스윕 */
+    position:absolute; top:-20%; left:-80%; width:55%; height:140%;
+    background:linear-gradient(105deg, transparent, rgba(255,255,255,.55) 45%, rgba(255,255,255,.15) 60%, transparent);
+    transform:skewX(-18deg);
+    animation:goldSheen 4.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes goldSheen{ 0%{left:-80%;} 42%{left:130%;} 100%{left:130%;} }
+  /* 주조 금 메달리온 */
+  .cbd-chip{
+    position:relative; z-index:1;
+    width:56%; max-width:92px; aspect-ratio:1;
+    border-radius:50%;
+    background:radial-gradient(circle at 32% 26%, #f6d878, #d9ad33 70%);
+    box-shadow:
+      inset 0 2px 5px rgba(96,64,10,.5),
+      inset 0 -2px 3px rgba(255,250,225,.65),
+      0 1px 0 rgba(255,252,235,.7);
+    border:1px solid rgba(110,76,12,.35);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:14px;
+  }
+  .cbd-key{
+    width:52%;
+    color:#5e3f0b;
+    filter:drop-shadow(0 1px 0 rgba(255,246,214,.65));
+    animation:keyFloat 3.4s ease-in-out infinite;
+  }
+  @keyframes keyFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+  .cbd-title{ /* 각인 효과 */
+    position:relative; z-index:1;
+    font-size:17px; font-weight:800; letter-spacing:.16em;
+    color:#4a3006; padding-left:.16em;
+    text-shadow:0 1px 0 rgba(255,248,220,.65), 0 -1px 1px rgba(70,45,5,.4);
+  }
+  .cbd-caption{
+    position:relative; z-index:1;
+    font-family:var(--mono); font-size:8px; font-weight:600;
+    letter-spacing:.36em; padding-left:.36em;
+    color:rgba(84,55,10,.75); margin-top:6px;
+    text-transform:uppercase;
+    text-shadow:0 1px 0 rgba(255,248,220,.5);
+  }
+  .cbd-serial{
+    position:absolute; bottom:9px; left:0; right:0; z-index:1;
+    text-align:center;
+    font-family:var(--mono); font-size:8px; letter-spacing:.22em;
+    color:rgba(84,55,10,.6);
+    text-shadow:0 1px 0 rgba(255,248,220,.4);
+  }
+
+  /* ============================================================
+     🔘 뽑기 버튼
+     ============================================================ */
+  .draw-wrap{ position:relative; z-index:2; margin-top:24px; }
+  .draw-wrap::before{ /* 버튼 뒤 은은한 파동 */
+    content:""; position:absolute; inset:-10px -18px;
+    border-radius:999px;
+    background:radial-gradient(closest-side, rgba(242,193,78,.22), transparent);
+    animation:btnAura 2.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes btnAura{ 0%,100%{opacity:.5; transform:scale(.96);} 50%{opacity:1; transform:scale(1.05);} }
+
+  /* shadcn 버튼 지오메트리(h-11, rounded-md, text-sm/med) + 골드 프라이머리 */
+  .draw-btn{
+    position:relative;
+    display:inline-flex; align-items:center; gap:8px;
+    height:48px; padding:0 28px;
+    font-family:var(--font); font-size:15px; font-weight:600; letter-spacing:-.01em;
+    color:#221703;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold) 70%);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:12px; cursor:pointer; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(242,193,78,.28), inset 0 1px 0 rgba(255,255,255,.5);
+    transition:transform .2s cubic-bezier(.3,1.3,.5,1), box-shadow .2s ease, filter .2s ease;
+  }
+  .draw-btn:hover{ filter:brightness(1.05); }
+  .draw-btn:hover{ transform:translateY(-2px); box-shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 38px rgba(242,193,78,.4), inset 0 1px 0 rgba(255,255,255,.6); }
+  .draw-btn:active{ transform:translateY(-1px) scale(.97); }
+  .draw-btn:focus-visible{ outline:2px solid var(--gold-light); outline-offset:3px; }
+  .draw-btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+  .db-shine{
+    position:absolute; top:0; left:-60%; width:40%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,.7), transparent);
+    transform:skewX(-20deg);
+  }
+  .draw-btn:hover .db-shine{ animation:shineSweep .9s ease forwards; }
+  @keyframes shineSweep{ to{ left:135%; } }
+
+  .deck-status{
+    position:relative; z-index:2; margin-top:15px;
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+    display:flex; align-items:center; gap:10px;
+  }
+  .deck-status strong{ color:var(--gold-light); }
+  .deck-status button{
+    background:none; border:none; color:var(--muted);
+    text-decoration:underline; cursor:pointer; font-family:var(--mono); font-size:12px; padding:0;
+    transition:color .2s;
+  }
+  .deck-status button:hover{ color:var(--gold-light); }
+
+  .hint{
+    position:relative; z-index:2; margin:30px 0 22px;
+    font-size:12px; color:var(--muted); text-align:center;
+    max-width:380px; line-height:1.7; padding:0 20px;
+  }
+  .hint code{
+    background:rgba(242,193,78,.08); border:1px solid rgba(242,193,78,.25);
+    color:var(--gold-light); padding:1px 6px; border-radius:6px; font-family:var(--mono);
+  }
+
+  /* ------- 기록 ------- */
+  .history{ position:relative; z-index:2; width:100%; max-width:440px; margin-bottom:56px; padding:0 20px; }
+  .history h3{ font-size:12px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin:0 0 10px; text-align:center; }
+  .history ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .history li{
+    display:flex; align-items:center; gap:10px;
+    background:var(--panel); border:1px solid var(--edge); border-radius:10px;
+    padding:10px 14px; font-size:13px;
+    transition:border-color .2s ease;
+    animation:histIn .35s ease;
+  }
+  @keyframes histIn{ from{opacity:0; transform:translateY(-6px);} to{opacity:1; transform:none;} }
+  .history li:hover{ border-color:rgba(242,193,78,.35); }
+  .history .tag{ flex-shrink:0; font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:999px; border:1px solid currentColor; }
+  .history .desc{ opacity:.85; }
+  .history .empty{ color:var(--muted); font-size:12px; text-align:center; padding:14px 0; border:none; background:none; }
+  .tag.plus{color:var(--plus);} .tag.minus{color:var(--minus);} .tag.move{color:var(--move);} .tag.special{color:var(--special);}
+
+  footer{ position:relative; z-index:2; font-size:11px; color:var(--muted); opacity:.6; margin-bottom:24px; }
+
+  /* ============================================================
+     🎫 리빌 (카드 플립 → 골든 티켓)
+     ============================================================ */
+  .reveal{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    opacity:0; pointer-events:none;
+    transition:opacity .28s ease;
+  }
+  .reveal.open{ opacity:1; pointer-events:auto; }
+  .reveal-backdrop{
+    position:absolute; inset:0;
+    background:rgba(4,4,8,.82);
+    backdrop-filter:blur(7px);
+  }
+
+  /* 회전하는 빛줄기 */
+  .rays{
+    position:absolute; width:900px; height:900px;
+    background:conic-gradient(
+      from 0deg,
+      transparent 0deg, rgba(242,193,78,.10) 12deg, transparent 24deg,
+      transparent 60deg, rgba(242,193,78,.08) 72deg, transparent 84deg,
+      transparent 120deg, rgba(242,193,78,.10) 132deg, transparent 144deg,
+      transparent 180deg, rgba(242,193,78,.08) 192deg, transparent 204deg,
+      transparent 240deg, rgba(242,193,78,.10) 252deg, transparent 264deg,
+      transparent 300deg, rgba(242,193,78,.08) 312deg, transparent 324deg, transparent 360deg
+    );
+    border-radius:50%;
+    -webkit-mask-image:radial-gradient(circle, black 20%, transparent 68%);
+            mask-image:radial-gradient(circle, black 20%, transparent 68%);
+    animation:raysSpin 22s linear infinite;
+    opacity:0; transition:opacity .8s ease;
+  }
+  .reveal.flipped .rays{ opacity:1; }
+  @keyframes raysSpin{ to{ transform:rotate(360deg); } }
+
+  .reveal-inner{
+    position:relative; z-index:1;
+    display:flex; flex-direction:column; align-items:center; gap:24px;
+  }
+
+  #flyer{ will-change:transform; }
+  .flip{ perspective:1700px; }
+  .flip-inner{
+    position:relative;
+    width:min(88vw, 380px);
+    transform-style:preserve-3d;
+    transition:transform 1s cubic-bezier(.25,.9,.3,1.05);
+  }
+  .reveal.flipped .flip-inner{ transform:rotateY(180deg); }
+
+  .face{
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    transform:translateZ(0);
+    border-radius:var(--radius-lg);
+  }
+  .face.front{
+    position:absolute; inset:0;
+    display:flex;
+    transition:opacity .1s linear, visibility 0s linear 0s;
+  }
+  /* 플립이 절반을 넘어간 뒤 앞면을 완전히 제거해 비침/겹침 방지 */
+  .reveal.flipped .face.front{
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .1s linear .42s, visibility 0s linear .52s;
+  }
+  .face.front .card-back-design{ border-radius:var(--radius-lg); }
+  .face.front .cbd-chip{ max-width:150px; margin-bottom:22px; }
+  .face.front .cbd-title{ font-size:26px; }
+  .face.front .cbd-caption{ font-size:10px; }
+  .face.front .cbd-serial{ font-size:10px; bottom:14px; }
+
+  /* ------- 골든 티켓 (뒷면) ------- */
+  .ticket{
+    position:relative;
+    transform:rotateY(180deg);
+    background-color:var(--panel);
+    background-image:linear-gradient(165deg, var(--panel-2), var(--panel));
+    border:1px solid rgba(242,193,78,.3);
+    border-radius:var(--radius-lg);
+    padding:26px 26px 22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.65), 0 0 60px rgba(242,193,78,.12);
+    overflow:hidden;
+    max-height:82vh; overflow-y:auto;
+  }
+  .ticket-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(242,193,78,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(242,193,78,.05) 1px, transparent 1px);
+    background-size:16px 16px; pointer-events:none;
+  }
+  .ticket::after{ /* 홀로그램 스윕 */
+    content:""; position:absolute; top:0; left:-150%;
+    width:60%; height:100%;
+    background:linear-gradient(115deg, transparent, rgba(255,233,174,.18), transparent);
+    transform:skewX(-20deg); pointer-events:none;
+  }
+  .reveal.flipped .ticket::after{ animation:ticketShimmer 3.4s ease-in-out 1s infinite; }
+  @keyframes ticketShimmer{ 0%{left:-150%;} 40%{left:150%;} 100%{left:150%;} }
+
+  .ticket-top{ position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .ticket-brand{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--gold-light); }
+  .ticket-brand .key-ico{ font-size:15px; filter:drop-shadow(0 0 6px rgba(242,193,78,.6)); }
+  .type-badge{
+    display:inline-flex; align-items:center;
+    font-family:var(--font); font-size:11px; font-weight:600; letter-spacing:.02em;
+    padding:3px 11px; border-radius:999px;
+    border:1px solid currentColor; background:rgba(255,255,255,.03);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .type-badge:hover{ transform:scale(1.07); box-shadow:0 0 16px currentColor; }
+  .type-badge.plus{color:var(--plus);} .type-badge.minus{color:var(--minus);}
+  .type-badge.move{color:var(--move);} .type-badge.special{color:var(--special);}
+
+  .ticket-title{
+    position:relative; z-index:1;
+    font-size:28px; font-weight:800; letter-spacing:-.02em; margin:0 0 5px;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .ticket-sub{ position:relative; z-index:1; font-size:12px; color:var(--muted); margin:0; font-family:var(--mono); letter-spacing:.1em; }
+  .ticket-head{ position:relative; z-index:1; text-align:center; }
+  .ticket-desc{
+    position:relative; z-index:1;
+    font-size:21px; font-weight:600; line-height:1.7; color:#fdfaf2;
+    text-align:center; word-break:keep-all;
+    margin:0; padding:26px 6px;
+    min-height:120px;
+    display:flex; align-items:center; justify-content:center;
+    text-shadow:0 0 24px rgba(242,193,78,.12);
+  }
+  /* 섹션 구분선 (파티션) */
+  .ticket-divider{
+    position:relative; z-index:1;
+    display:flex; align-items:center; gap:12px;
+    margin:16px 0;
+  }
+  .ticket-divider::before, .ticket-divider::after{
+    content:""; flex:1; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(242,193,78,.4), transparent);
+  }
+  .ticket-divider span{
+    font-size:11px; color:var(--gold);
+    text-shadow:0 0 10px rgba(242,193,78,.6);
+  }
+  .ticket-perf{
+    position:relative; z-index:1; height:1px; margin:0 -26px 18px;
+    background:repeating-linear-gradient(90deg, transparent, transparent 6px, var(--edge) 6px, var(--edge) 10px);
+  }
+  .ticket-perf::before,.ticket-perf::after{
+    content:""; position:absolute; top:-11px; width:22px; height:22px; border-radius:50%;
+    background:var(--bg);
+  }
+  .ticket-perf::before{left:-37px;} .ticket-perf::after{right:-37px;}
+  .ticket-bottom{ position:relative; z-index:1; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; }
+  .barcode{ display:flex; align-items:flex-end; gap:1px; height:34px; }
+  .barcode span{ display:block; width:2px; background:var(--muted); opacity:.7; }
+  .barcode-caption{ font-family:var(--mono); font-size:9px; color:var(--muted); margin-top:4px; letter-spacing:.06em; }
+  .ticket-no{ text-align:right; }
+  .ticket-no .label{ font-family:var(--mono); font-size:9px; color:var(--muted); letter-spacing:.1em; }
+  .ticket-no strong{
+    display:block; font-family:var(--mono); font-size:30px; font-weight:800; color:var(--gold);
+    text-shadow:0 0 20px rgba(242,193,78,.45);
+  }
+
+  .reveal-actions{ display:flex; gap:12px; opacity:0; transform:translateY(10px); transition:all .5s ease .5s; }
+  .reveal.flipped .reveal-actions{ opacity:1; transform:none; }
+  /* shadcn outline 버튼 변형 */
+  .ghost-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    height:40px; padding:0 20px;
+    font-family:var(--font); font-size:13.5px; font-weight:500;
+    background:var(--panel); color:var(--text);
+    border:1px solid var(--edge); border-radius:10px; cursor:pointer;
+    transition:all .18s ease;
+  }
+  .ghost-btn:hover{ background:var(--panel-2); border-color:rgba(242,193,78,.45); color:var(--gold-light); transform:translateY(-1px); }
+  .ghost-btn:focus-visible{ outline:2px solid var(--gold-light); outline-offset:2px; }
+
+  /* ------- 파티클: 스파크 + 컨페티 ------- */
+  .fx-layer{ position:absolute; inset:0; pointer-events:none; overflow:visible; z-index:2; }
+  .spark{
+    position:absolute; width:6px; height:6px; border-radius:50%;
+    background:var(--gold-light);
+    box-shadow:0 0 10px 3px var(--gold);
+    animation:sparkFly .9s cubic-bezier(.2,.8,.4,1) forwards;
+  }
+  @keyframes sparkFly{
+    0%{ transform:translate(0,0) scale(1); opacity:1; }
+    100%{ transform:translate(var(--dx), var(--dy)) scale(0); opacity:0; }
+  }
+  .confetti{
+    position:absolute; top:-5%;
+    width:8px; height:13px;
+    animation:confFall linear forwards;
+    opacity:.95;
+  }
+  @keyframes confFall{
+    0%{ transform:translateY(0) rotate(0) rotateY(0); opacity:1; }
+    100%{ transform:translateY(110vh) rotate(var(--rot)) rotateY(720deg); opacity:.6; }
+  }
+
+  .toast{
+    position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--panel); border:1px solid rgba(242,193,78,.35);
+    color:var(--gold-light); padding:12px 20px; border-radius:999px;
+    font-size:13px; z-index:60; opacity:0; pointer-events:none;
+    transition:all .35s ease;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+
+  /* ------- 부루마블 판으로 돌아가기 버튼 ------- */
+  .back-board-btn{
+    position:fixed; top:18px; left:18px; z-index:70;
+    display:inline-flex; align-items:center; gap:8px;
+    height:42px; padding:0 18px;
+    font-family:var(--font); font-size:13.5px; font-weight:600;
+    color:var(--gold-light); text-decoration:none;
+    background:rgba(20,19,16,.85);
+    border:1px solid rgba(242,193,78,.4); border-radius:11px;
+    backdrop-filter:blur(6px);
+    box-shadow:0 6px 20px rgba(0,0,0,.4);
+    transition:all .18s ease;
+  }
+  .back-board-btn:hover{
+    background:var(--panel-2); border-color:var(--gold);
+    transform:translateY(-2px);
+    box-shadow:0 10px 26px rgba(0,0,0,.5), 0 0 18px rgba(242,193,78,.25);
+  }
+  .back-board-btn .arr{ font-size:15px; transition:transform .18s ease; }
+  .back-board-btn:hover .arr{ transform:translateX(-3px); }
+  @media (max-width:640px){
+    .back-board-btn{ top:12px; left:12px; height:38px; padding:0 14px; font-size:12.5px; }
+  }
+
+  @media (max-width:640px){
+    :root{ --ring-z:215px; --card-w:112px; --card-h:160px; }
+    .stage{ height:250px; }
+    .cbd-chip{ margin-bottom:10px; }
+    .cbd-title{ font-size:13px; }
+    .cbd-caption{ font-size:7px; }
+    .cbd-serial{ font-size:7px; bottom:6px; }
+    .ticket-desc{ font-size:19px; }
+    header p{ font-size:14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bg-grid, .dust i, h1, .cbd-key, .cbd-sheen, .bg-orb, .aurora, .stars i, .shooting, .grain,
+    .draw-wrap::before, .rays{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="back-board-btn" href="index.html"><span class="arr">←</span> 부루마블 판으로 돌아가기</a>
+
+<div class="aurora"></div>
+<div class="aurora rev"></div>
+<div class="stars" id="stars"></div>
+<div class="shooting" style="top:12%; right:8%;"></div>
+<div class="shooting s2" style="top:30%; right:35%;"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+<div class="bg-grid"></div>
+<div class="vignette"></div>
+<div class="grain"></div>
+<div class="dust" id="dust"></div>
+
+<header>
+  <div class="eyebrow"><span class="dot"></span>BLUE MARBLE · GOLDEN KEY</div>
+  <h1>황금열쇠 뽑기</h1>
+  <p>카드들이 돌고 있어요. 버튼을 누르면 운명의 카드가 멈추고 공개됩니다.</p>
+</header>
+
+<div class="stage" id="stage">
+  <div class="ring" id="ring"></div>
+</div>
+
+<div class="draw-wrap">
+  <button class="draw-btn" id="drawBtn">
+    <span class="db-shine"></span>
+    🔑 황금열쇠 뽑기
+  </button>
+</div>
+
+<div class="deck-status">
+  남은 카드 <strong id="deckCount">25</strong> / <span id="deckTotal">25</span>
+  <button id="resetDeckBtn" type="button">덱 초기화</button>
+</div>
+
+<p class="hint">카드 내용을 바꾸려면 HTML 파일을 열어 <code>GOLDEN_KEYS</code> 배열을 수정하세요. 뽑기 기록과 남은 덱은 브라우저에 자동 저장됩니다.</p>
+
+<div class="history">
+  <h3>최근 뽑은 카드</h3>
+  <ul id="historyList"><li class="empty">아직 뽑은 카드가 없습니다</li></ul>
+</div>
+
+<footer>부루마블 황금열쇠 뽑기 · 자유롭게 수정해서 사용하세요</footer>
+
+<!-- 리빌 오버레이 -->
+<div class="reveal" id="reveal" aria-hidden="true">
+  <div class="reveal-backdrop" id="backdrop"></div>
+  <div class="rays"></div>
+  <div class="fx-layer" id="fxLayer"></div>
+  <div class="reveal-inner">
+    <div id="flyer">
+    <div class="flip">
+      <div class="flip-inner" id="flipInner">
+        <!-- 앞면: 카드 뒷면 디자인 -->
+        <div class="face front">
+          <div class="card-back-design">
+            <div class="cbd-sheen"></div>
+            <div class="cbd-chip">
+            <svg class="cbd-key" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="23" cy="23" r="10.5"/>
+                  <path d="M30.5 30.5 L50 50"/>
+                  <path d="M42 42 L48 36"/>
+                  <path d="M50 50 L56 44"/>
+                </g>
+            </svg>
+            </div>
+            <div class="cbd-title">황금열쇠</div>
+            <div class="cbd-caption">Golden Key</div>
+            <div class="cbd-serial">BLUE MARBLE</div>
+          </div>
+        </div>
+        <!-- 뒷면: 결과 티켓 -->
+        <div class="face ticket" id="ticket">
+          <div class="ticket-grid"></div>
+          <div class="ticket-top">
+            <div class="ticket-brand"><svg width="15" height="15" viewBox="0 0 64 64" fill="none" style="color:var(--gold)"><g stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="23" cy="23" r="11"/><path d="M31 31 L50 50"/><path d="M42 42 L48 36"/><path d="M50 50 L56 44"/></g></svg>부루마블</div>
+            <div class="type-badge" id="typeBadge">유형</div>
+          </div>
+          <div class="ticket-head">
+            <h2 class="ticket-title">황금열쇠</h2>
+            <p class="ticket-sub">GOLDEN KEY CARD</p>
+          </div>
+          <div class="ticket-divider"><span>✦</span></div>
+          <p class="ticket-desc" id="ticketDesc"></p>
+          <div class="ticket-perf"></div>
+          <div class="ticket-bottom">
+            <div>
+              <div class="barcode" id="barcode"></div>
+              <div class="barcode-caption" id="barcodeCaption">GK-0000-0000</div>
+            </div>
+            <div class="ticket-no"><span class="label">No.</span><strong id="cardNo">01</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="reveal-actions">
+      <button class="ghost-btn" id="redrawBtn">🎲 다시 뽑기</button>
+      <button class="ghost-btn" id="closeBtn">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="sr-only" aria-live="polite" id="ariaLive"></div>
+
+<script>
+/* ================================================================
+   ✏️  황금열쇠 카드 내용 수정하기
+   -----------------------------------------------------------------
+   아래 GOLDEN_KEYS 배열만 자유롭게 수정/추가/삭제하면 됩니다.
+
+   각 카드 항목:
+     desc : 카드에 표시될 설명 (필수)
+     type : 'plus'(이득) | 'minus'(손해) | 'move'(이동) | 'special'(특수)
+            → 카드 상단 배지 색상을 결정합니다
+
+   카드를 추가하려면 아래 형식으로 한 줄만 더 넣으세요:
+     { desc:"카드 내용을 여기에 적으세요.", type:"plus" },
+================================================================ */
+const GOLDEN_KEYS = [
+  { desc:"사망의 골짜기 탈출권을 획득합니다. 보관 후 1회 사용 가능", type:"plus" },
+  { desc:"1달란트를 획득합니다.", type:"plus" },
+  { desc:"가장 많은 달란트를 가진 팀에서 1달란트를 가져옵니다.", type:"plus" },
+  { desc:"한 바퀴를 돌고 달란트를 받은 후 총무부로 가세요.", type:"move" },
+  { desc:"뒤로 3칸 이동합니다.", type:"move" },
+  { desc:"앞으로 2칸 이동합니다.", type:"move" },
+  { desc:"상급으로 이동하여 달란트를 획득하세요.", type:"special" },
+  { desc:"마귀의 유혹으로 1달란트를 잃어버립니다.", type:"minus" },
+  { desc:"가장 일꾼이 적은 팀에 일꾼을 양보하세요", type:"special" },
+  { desc:"해외선교 다녀오기 (꽝, 다음 턴 쉬세요ㅎㅎ) ", type:"special" },
+  { desc:"진행자를 이겨라! 이기면 1 달란트 지급", type:"special" },
+  { desc:"미화부로 이동하여 홈런볼 1봉지를 얻으세요.", type:"special" },
+  { desc:"원하는 말과 위치를 바꾸세요.", type:"move" },
+  { desc:"꿈을 꿨습니다.. 가장 최근에 세워진 일꾼을 없애세요.", type:"minus" },
+  { desc:"달란트 지불 면제권을 획득합니다. 보관 후 1회 사용 가능 ", type:"special" },
+  { desc:"청년회로 이동하세요.", type:"move" },
+  { desc:"게임 재도전권을 획득합니다. 보관 후 1회 사용 가능", type:"special" },
+  { desc:"은장회 식사봉사 인원이 부족합니다. 은장회로 이동하세요.", type:"move" },
+  { desc:"대집회 주차 봉사자 2명이 필요합니다. 주차수송부로 이동하세요.", type:"move" },
+  { desc:"세계 선교를 위한 바자회 날입니다. 바자회로 이동하세요.", type:"move" },
+  { desc:"가장 적은 달란트를 가진 팀에게 1달란트를 가져옵니다.", type:"special" },
+  { desc:"황금열쇠 3번을 뽑아 원하는 하나를 선택하세요.", type:"special" },
+  { desc:"주님의 부름을 받아 우리 팀을 제외한 나머지 팀의 일꾼 한 명씩 주님께 떠납니다.", type:"special" },
+  { desc:"우리 팀을 제외한 나머지 팀들은 다음 자신의 턴이 오면 나온 주사위 수만큼 뒤로 이동합니다.", type:"move" },
+  { desc:"침륜에 빠져 현재 위치한 줄의 모든 일꾼들이 교회를 떠납니다.", type:"special" },
+];
+
+/* 연출 설정 (원하면 조정하세요) */
+const CONFIG = {
+  ringCount: 10,          // 링에 표시되는 카드 수 (장식용, 줄일수록 간격이 넓어짐)
+  idleSpeed: 20,          // 대기 상태 회전 속도 (도/초)
+  spinDuration: 4200,     // 뽑기 시 회전→감속 총 시간(ms) (키우면 더 천천히)
+  extraSpins: 0,          // 추가 바퀴 수 (0이어도 최소 반 바퀴는 돕니다)
+  noRepeatUntilDeckEmpty: true, // 덱이 빌 때까지 중복 없이 뽑기
+};
+
+const TYPE_LABEL = { plus:'이득', minus:'손해', move:'이동', special:'특수' };
+const STORAGE_KEY='goldenKeyHistory_v1', DECK_KEY='goldenKeyDeck_v1';
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let deck=[], history=[];
+
+/* ---------- 유틸 ---------- */
+const $ = id => document.getElementById(id);
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+const newDeck = () => shuffle(GOLDEN_KEYS.map((_,i)=>i));
+
+function loadState(){
+  try{
+    const d=JSON.parse(localStorage.getItem(DECK_KEY));
+    if(Array.isArray(d)&&d.length) deck=d.filter(i=>i<GOLDEN_KEYS.length);
+  }catch(e){}
+  if(!deck.length) deck=newDeck();
+  try{
+    const h=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(Array.isArray(h)) history=h;
+  }catch(e){}
+}
+function saveState(){
+  try{
+    localStorage.setItem(DECK_KEY, JSON.stringify(deck));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  }catch(e){}
+}
+
+/* ---------- 배경 금가루 ---------- */
+(function makeDust(){
+  const dust=$('dust');
+  for(let i=0;i<26;i++){
+    const p=document.createElement('i');
+    p.style.left=(Math.random()*100)+'%';
+    p.style.setProperty('--dx',(Math.random()*80-40)+'px');
+    p.style.animationDuration=(9+Math.random()*11)+'s';
+    p.style.animationDelay=(-Math.random()*18)+'s';
+    const s=(2+Math.random()*3);
+    p.style.width=s+'px'; p.style.height=s+'px';
+    dust.appendChild(p);
+  }
+})();
+
+/* ---------- 별빛 생성 ---------- */
+(function makeStars(){
+  const box=$('stars');
+  for(let i=0;i<70;i++){
+    const s=document.createElement('i');
+    const size=(Math.random()<.85 ? 1+Math.random()*1.5 : 2.5+Math.random()*1.5);
+    s.style.width=size+'px'; s.style.height=size+'px';
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.animationDuration=(2.5+Math.random()*4)+'s';
+    s.style.animationDelay=(-Math.random()*6)+'s';
+    if(size>2.4) s.style.boxShadow='0 0 6px 1px rgba(255,240,200,.8)';
+    box.appendChild(s);
+  }
+})();
+
+/* ---------- 3D 링 구성 ---------- */
+const ringEl=$('ring'), stageEl=$('stage');
+const ringCards=[];
+(function buildRing(){
+  const n=CONFIG.ringCount;
+  for(let i=0;i<n;i++){
+    const ang=(360/n)*i;
+    const card=document.createElement('div');
+    card.className='ring-card';
+    card.style.setProperty('--ang',ang+'deg');
+    card.dataset.ang=ang;
+    card.innerHTML=`
+      <div class="card-back-design">
+        <div class="cbd-sheen"></div>
+        <div class="cbd-chip">
+        <svg class="cbd-key" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="23" cy="23" r="10.5"/>
+            <path d="M30.5 30.5 L50 50"/>
+            <path d="M42 42 L48 36"/>
+            <path d="M50 50 L56 44"/>
+          </g>
+        </svg>
+        </div>
+        <div class="cbd-title">황금열쇠</div>
+        <div class="cbd-caption">Golden Key</div>
+        <div class="cbd-serial">NO.${String(i+1).padStart(2,'0')}</div>
+      </div>`;
+    ringEl.appendChild(card);
+    ringCards.push(card);
+  }
+})();
+
+/* ---------- 링 회전 (JS 구동: 자연스러운 감속을 위해) ---------- */
+let ringAngle=0, ringState='idle', lastT=performance.now(), lastNotch=null;
+let tween=null; // {from, to, start, duration, onDone}
+
+/* 룰렛 감속 곡선: 즉시 최고 속도 → 길게 감속 → 살짝 반동 후 정지 */
+const easeSpin = t => 1 - (1-t)*(1-t);  /* 완만한 시작 속도 + 긴 감속 꼬리 */
+
+function ringLoop(t){
+  const dt=(t-lastT)/1000; lastT=t;
+  if(ringState==='idle'){
+    ringAngle=(ringAngle - CONFIG.idleSpeed*dt)%360;
+  }else if(ringState==='tween' && tween){
+    const p=Math.min(1,(t-tween.start)/tween.duration);
+    ringAngle=tween.from+(tween.to-tween.from)*easeSpin(p);
+    // 카드 한 칸(360/개수 °)을 지날 때마다 래칫 '탁' → 감속에 맞춰 드르륵
+    const slotSize=360/CONFIG.ringCount;
+    const notch=Math.floor(ringAngle/slotSize);
+    if(lastNotch===null) lastNotch=notch;
+    else if(notch!==lastNotch){ playTick(); lastNotch=notch; }
+    if(p>=1){ ringState='stopped'; lastNotch=null; const cb=tween.onDone; tween=null; cb&&cb(); }
+  }
+  ringEl.style.transform=`rotateY(${ringAngle}deg)`;
+  requestAnimationFrame(ringLoop);
+}
+requestAnimationFrame(ringLoop);
+
+/* 특정 카드가 정면을 향하도록 회전을 멈추는 트윈 */
+function spinToCard(slotIndex, onDone){
+  const slotAng=parseFloat(ringCards[slotIndex].dataset.ang);
+  // 카드가 정면: ringAngle + slotAng ≡ 0 (mod 360)
+  const targetMod=((-slotAng)%360+360)%360;
+  const curMod=((ringAngle)%360+360)%360;
+  let delta=targetMod-curMod;
+  if(delta>0) delta-=360;                       // 진행 방향(음수)으로 계속 회전
+  if(delta>-180) delta-=360;                    // 최소 반 바퀴 이상은 돌도록 보장
+  delta-=360*CONFIG.extraSpins;                 // 추가 바퀴
+  lastNotch=null;
+  tween={ from:ringAngle, to:ringAngle+delta, start:performance.now(), duration:CONFIG.spinDuration, onDone };
+  ringState='tween';
+}
+
+/* ---------- 사운드 (Web Audio) ---------- */
+let audioCtx;
+function ctx(){ return audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); }
+let _noiseBuf=null;
+function playTick(){
+  try{
+    const c=ctx(), now=c.currentTime;
+    // 노이즈 클릭 (래칫이 걸리는 '탁' 질감)
+    if(!_noiseBuf){
+      _noiseBuf=c.createBuffer(1, Math.floor(c.sampleRate*0.03), c.sampleRate);
+      const d=_noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2);
+    }
+    const src=c.createBufferSource(); src.buffer=_noiseBuf;
+    const bp=c.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2100; bp.Q.value=1.1;
+    const ng=c.createGain(); ng.gain.value=.5;
+    src.connect(bp).connect(ng).connect(c.destination); src.start(now);
+    // 저음 노크 (몸통 울림)
+    const o=c.createOscillator(), og=c.createGain();
+    o.type='square';
+    o.frequency.setValueAtTime(300,now);
+    o.frequency.exponentialRampToValueAtTime(130,now+.03);
+    og.gain.setValueAtTime(.12,now);
+    og.gain.exponentialRampToValueAtTime(.0001,now+.055);
+    o.connect(og).connect(c.destination); o.start(now); o.stop(now+.06);
+  }catch(e){}
+}
+function playChime(){
+  try{
+    const c=ctx(), now=c.currentTime;
+    [523.25,659.25,783.99,1046.5].forEach((f,i)=>{
+      const o=c.createOscillator(), g=c.createGain();
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(0,now+i*.09);
+      g.gain.linearRampToValueAtTime(.08,now+i*.09+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,now+i*.09+.6);
+      o.connect(g).connect(c.destination);
+      o.start(now+i*.09); o.stop(now+i*.09+.6);
+    });
+  }catch(e){}
+}
+
+
+/* ---------- 파티클 ---------- */
+function burstSparks(container,count=22){
+  const r=container.getBoundingClientRect();
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    s.className='spark';
+    const angle=Math.random()*Math.PI*2, dist=90+Math.random()*160;
+    s.style.setProperty('--dx',Math.cos(angle)*dist+'px');
+    s.style.setProperty('--dy',Math.sin(angle)*dist+'px');
+    s.style.left='50%'; s.style.top='45%';
+    s.style.animationDelay=(Math.random()*.18)+'s';
+    container.appendChild(s);
+    setTimeout(()=>s.remove(),1300);
+  }
+}
+function confettiRain(container,count=55){
+  const colors=['#f2c14e','#ffe9ae','#c99bff','#7ab7ff','#ffffff','#a97a1e'];
+  for(let i=0;i<count;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'%';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.setProperty('--rot',(Math.random()*900-450)+'deg');
+    c.style.animationDuration=(2.4+Math.random()*2.2)+'s';
+    c.style.animationDelay=(Math.random()*.5)+'s';
+    if(Math.random()<.3) c.style.borderRadius='50%';
+    container.appendChild(c);
+    setTimeout(()=>c.remove(),5500);
+  }
+}
+
+/* ---------- 토스트 ---------- */
+let toastTimer;
+function showToast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ---------- 기록/덱 표시 ---------- */
+function renderHistory(){
+  const list=$('historyList');
+  if(!history.length){ list.innerHTML='<li class="empty">아직 뽑은 카드가 없습니다</li>'; return; }
+  list.innerHTML=history.slice(0,6).map(h=>`
+    <li><span class="tag ${h.type}">${TYPE_LABEL[h.type]}</span><span class="desc">${h.desc}</span></li>`).join('');
+}
+function renderDeckStatus(){
+  $('deckCount').textContent=deck.length;
+  $('deckTotal').textContent=GOLDEN_KEYS.length;
+}
+
+/* ---------- 티켓 채우기 ---------- */
+function renderBarcode(el,count=28){
+  el.innerHTML='';
+  for(let i=0;i<count;i++){
+    const bar=document.createElement('span');
+    bar.style.width=(Math.random()<.25?3:1.5)+'px';
+    bar.style.height=(60+Math.random()*40)+'%';
+    bar.style.opacity=Math.random()<.15?.25:.75;
+    el.appendChild(bar);
+  }
+}
+const randomSerial=()=>`GK-${new Date().getFullYear()}-${Math.floor(1000+Math.random()*9000)}`;
+
+function fillTicket(cardIndex){
+  const card=GOLDEN_KEYS[cardIndex];
+  const badge=$('typeBadge');
+  badge.textContent=TYPE_LABEL[card.type];
+  badge.className='type-badge '+card.type;
+  $('ticketDesc').textContent=card.desc;
+  $('cardNo').textContent=String(cardIndex+1).padStart(2,'0');
+  renderBarcode($('barcode'));
+  $('barcodeCaption').textContent=randomSerial();
+  $('ariaLive').textContent='황금열쇠: '+card.desc;
+
+  history.unshift({desc:card.desc, type:card.type});
+  history=history.slice(0,12);
+  renderHistory(); renderDeckStatus(); saveState();
+}
+
+/* ---------- 뽑기 흐름 ----------
+   1) 링이 가속→자연 감속하며 당첨 슬롯이 정면에 멈춤
+   2) 그 카드가 금빛으로 빛나며 화면 앞으로 날아옴
+   3) 카드가 뒤집히며(플립) 골든 티켓 공개 + 스파크/컨페티/차임
+--------------------------------- */
+const revealEl=$('reveal'), flipInner=$('flipInner'), fxLayer=$('fxLayer');
+const drawBtn=$('drawBtn');
+let chosenSlot=null, drawing=false;
+
+function pickCard(){
+  if(CONFIG.noRepeatUntilDeckEmpty){
+    if(!deck.length){ deck=newDeck(); showToast('🔄 카드를 모두 뽑아 덱을 다시 섞었습니다!'); }
+    return deck.pop();
+  }
+  return Math.floor(Math.random()*GOLDEN_KEYS.length);
+}
+
+function runDraw(){
+  if(drawing) return;
+  drawing=true;
+  drawBtn.disabled=true;
+  stageEl.classList.add('drawing');
+
+  const cardIndex=pickCard();
+  fillTicket.pending=cardIndex;
+
+  /* 참고: 회전→멈춤은 이 페이지의 핵심 연출이므로
+     OS의 '모션 줄이기' 설정과 무관하게 항상 실행합니다.
+     (장식용 배경 애니메이션만 CSS에서 자동으로 꺼집니다) */
+  // 브라우저 정책상 사용자 제스처 안에서 오디오를 깨워야 소리가 납니다
+  try{ const a=ctx(); if(a.state==='suspended') a.resume(); }catch(e){}
+
+  chosenSlot=Math.floor(Math.random()*ringCards.length);
+  spinToCard(chosenSlot, ()=>{
+    const card=ringCards[chosenSlot];
+    card.classList.add('chosen');          // 금빛 파동
+    setTimeout(()=>{
+      stageEl.classList.add('dimmed');     // 나머지 흐려짐
+      fillTicket(cardIndex);
+      flyFromCard(card);                   // 그 카드가 그대로 커지며 중앙으로
+    }, 560);
+  });
+}
+
+/* 멈춘 카드의 화면 위치에서 시작해 중앙으로 커지며 이동 → 도착 후 플립 */
+const flyer=document.getElementById('flyer');
+function flyFromCard(cardEl){
+  const startRect=cardEl.getBoundingClientRect();
+
+  revealEl.classList.add('open');
+  revealEl.setAttribute('aria-hidden','false');
+
+  requestAnimationFrame(()=>{
+    const endRect=flyer.getBoundingClientRect();
+    const dx=(startRect.left+startRect.width/2)-(endRect.left+endRect.width/2);
+    const dy=(startRect.top+startRect.height/2)-(endRect.top+endRect.height/2);
+    const s=startRect.width/endRect.width;
+
+    // 시작: 링 카드의 위치/크기에 정확히 겹쳐놓기
+    flyer.style.transition='none';
+    flyer.style.transform=`translate(${dx}px, ${dy}px) scale(${s})`;
+    cardEl.style.opacity='0';   // 링 카드는 이 순간 사라져 같은 카드가 떠오르는 것처럼 보임
+
+    requestAnimationFrame(()=>{
+      flyer.style.transition='transform .75s cubic-bezier(.3,.85,.3,1)';
+      flyer.style.transform='translate(0,0) scale(1)';
+    });
+  });
+
+  // 도착 직후 플립
+  setTimeout(()=>{
+    revealEl.classList.add('flipped');
+    setTimeout(()=>{
+      burstSparks(fxLayer);
+      confettiRain(fxLayer);
+      playChime();
+    }, 520);
+    drawing=false;
+    drawBtn.disabled=false;
+  }, 900);
+}
+
+function closeReveal(){
+  revealEl.classList.remove('open','flipped');
+  revealEl.setAttribute('aria-hidden','true');
+  fxLayer.innerHTML='';
+  flyer.style.transition='none';
+  flyer.style.transform='';
+  // 링 원상복구 후 다시 유유히 회전
+  stageEl.classList.remove('dimmed','drawing');
+  ringCards.forEach(c=>{ c.classList.remove('chosen','zoom'); c.style.opacity=''; });
+  ringState='idle';
+}
+
+drawBtn.addEventListener('click',runDraw);
+$('redrawBtn').addEventListener('click',()=>{ closeReveal(); setTimeout(runDraw,350); });
+$('closeBtn').addEventListener('click',closeReveal);
+$('backdrop').addEventListener('click',closeReveal);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&revealEl.classList.contains('open')) closeReveal();
+});
+$('resetDeckBtn').addEventListener('click',()=>{
+  deck=newDeck(); renderDeckStatus(); saveState();
+  showToast('🔄 덱을 새로 섞었습니다.');
+});
+
+/* ---------- 티켓 마우스 틸트 ---------- */
+if(!reducedMotion){
+  const ticket=$('ticket');
+  flipInner.addEventListener('mousemove',e=>{
+    if(!revealEl.classList.contains('flipped')) return;
+    const r=flipInner.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    flipInner.style.transform=`rotateY(${180+x*10}deg) rotateX(${-y*8}deg)`;
+  });
+  flipInner.addEventListener('mouseleave',()=>{
+    if(revealEl.classList.contains('flipped')) flipInner.style.transform='';
+  });
+}
+
+/* ---------- 시작 ---------- */
+loadState();
+renderHistory();
+renderDeckStatus();
+</script>
+</body>
+</html>
