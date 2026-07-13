@@ -7,7 +7,7 @@
 - **웹/모바일**: https://shindaehyuk.github.io/blue_marble/ 접속 (핸드폰에서도 바로 실행됩니다)
 - **로컬**: 별도 설치 없이 `index.html`을 브라우저로 열면 바로 실행됩니다.
 
-개발 브랜치에 푸시하면 GitHub Actions가 `gh-pages` 브랜치로 미러링해 사이트가 자동 갱신됩니다.
+`master` 브랜치에 머지되면 GitHub Actions가 `gh-pages` 브랜치로 미러링해 사이트가 자동 갱신됩니다. (작업 브랜치 → `master`로 PR → 머지 → 자동 배포)
 
 ## 구성
 

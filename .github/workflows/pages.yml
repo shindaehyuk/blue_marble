@@ -1,9 +1,9 @@
 name: Deploy GitHub Pages
 
-# 개발 브랜치에 푸시하면 gh-pages 브랜치로 미러링 → GitHub Pages가 자동 배포
+# master에 머지(푸시)되면 gh-pages 브랜치로 미러링 → GitHub Pages가 자동 배포
 on:
   push:
-    branches: [claude/burumabl-board-game-qic0qa]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
