@@ -55,8 +55,9 @@
       repeating-linear-gradient(45deg,  rgba(255,255,255,.035) 0 1px, transparent 1px 30px),
       repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 1px, transparent 1px 30px);
     color:var(--text);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    overflow:hidden;
+    display:flex; flex-direction:column; align-items:center;
+    overflow-y:auto; overflow-x:hidden;      /* 내용이 화면보다 길면 세로 스크롤 */
+    -webkit-overflow-scrolling:touch;
     transition:opacity .6s ease, visibility 0s linear .6s;
   }
   #intro.gone{ opacity:0; visibility:hidden; pointer-events:none; }
@@ -76,7 +77,12 @@
   .vignette{ position:absolute; inset:0; z-index:0; pointer-events:none;
     box-shadow:inset 0 0 180px 60px rgba(2,6,14,.8); }
 
-  .intro-inner{ position:relative; z-index:1; text-align:center; padding:24px; max-width:760px; }
+  .intro-inner{
+    position:relative; z-index:1; text-align:center;
+    padding:36px 24px 20px; max-width:760px;
+    margin:auto;   /* 공간이 남으면 가운데, 넘치면 스크롤 */
+    flex-shrink:0;
+  }
   .intro-eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-family:var(--mono); font-size:12px; letter-spacing:.18em;
@@ -150,8 +156,8 @@
   .start-btn:hover{ filter:brightness(1.05); transform:translateY(-2px);
     box-shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 44px rgba(230,192,92,.45), inset 0 1px 0 rgba(255,255,255,.6); }
   .start-btn:active{ transform:translateY(-1px) scale(.97); }
-  .intro-foot{ position:absolute; bottom:20px; left:0; right:0; text-align:center;
-    font-size:11px; color:var(--muted); opacity:.6; z-index:1; }
+  .intro-foot{ position:relative; z-index:1; flex-shrink:0; text-align:center;
+    font-size:11px; color:var(--muted); opacity:.6; padding:18px 0 26px; }
 
   /* ============================================================
      🗺️ 게임 화면 / 보드
