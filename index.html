@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0e1f30">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%8E%B2%3C/text%3E%3C/svg%3E">
 <title>부름마블 | 연합교제</title>
 <style>
   /* ============================================================
@@ -44,6 +45,7 @@
     color:var(--text);
   }
   button{font-family:var(--font);}
+  button, .tile, a{ touch-action:manipulation; }  /* 모바일 더블탭 줌 방지 */
 
   /* ============================================================
      🏁 인트로 (게임 시작 전 페이지)
@@ -569,6 +571,12 @@
     animation:dblPop .5s cubic-bezier(.3,1.6,.5,1);
   }
   @keyframes dblPop{ from{ transform:scale(0);} to{ transform:scale(1);} }
+  .dice-history{
+    min-height:18px; margin-top:5px; padding:0 20px;
+    font-family:var(--mono); font-size:11.5px; color:var(--muted);
+    letter-spacing:.02em;
+  }
+  .dice-history b{ color:var(--gold-light); font-weight:700; }
   .dice-actions{ display:flex; justify-content:center; gap:10px; padding:10px 20px 0; }
   .dice-actions .mbtn{ flex:none; min-width:150px; }
 
@@ -878,6 +886,7 @@
       <div class="die" id="die2"></div>
     </div>
     <div class="dice-result" id="diceResult">버튼을 눌러 주사위를 굴리세요</div>
+    <div class="dice-history" id="diceHistory"></div>
     <div class="dice-actions">
       <button class="mbtn" id="rollBtn">굴리기!</button>
     </div>
@@ -1090,8 +1099,8 @@ const TILES = [
     desc:"2달란트를 내세요! 낸 달란트는 헌금통에 쌓이고, 상급 칸에서 가져갈 수 있습니다." },
   { name:"시설관리부",    img:"assets/image76.png", kind:"dept", home:"D",
     desc:"시설관리부 칸에 도착했습니다.",
-    game:"병뚜껑을 정해진 위치로 가장 근접하게 날리는 게임",
-    win:"가장 근접하게 날린 팀이 승리" },
+    game:"끈끈이를 이용해 동전을 가져오는 게임",
+    win:"동전을 <b>먼저</b> 가져오는 팀이 승리" },
   { name:"꽃꽂이부",      img:"assets/image75.png", kind:"dept", home:"D",
     desc:"꽃꽂이부 칸에 도착했습니다.",
     game:"다트 꽃꽂이",
@@ -1110,10 +1119,10 @@ const KIND_LABEL = { start:"출발", island:"특수 칸", hq:"진행 본부", ba
 
 /* 4팀 (동물 캐릭터 말) — 이름은 게임 화면 왼쪽 '팀 이름 수정하기'에서 변경 가능 */
 const TEAMS = [
-  { id:"A", name:"강아지팀", emoji:"🐶", color:"var(--teamA)" },
-  { id:"B", name:"고양이팀", emoji:"🐱", color:"var(--teamB)" },
-  { id:"C", name:"토끼팀",   emoji:"🐰", color:"var(--teamC)" },
-  { id:"D", name:"여우팀",   emoji:"🦊", color:"var(--teamD)" },
+  { id:"A", name:"파랑팀", emoji:"🙋", color:"var(--teamA)" },
+  { id:"B", name:"분홍팀", emoji:"💃", color:"var(--teamB)" },
+  { id:"C", name:"초록팀", emoji:"🧑‍🌾", color:"var(--teamC)" },
+  { id:"D", name:"주황팀", emoji:"👷", color:"var(--teamD)" },
 ];
 const DEFAULT_TEAM_NAMES = Object.fromEntries(TEAMS.map(t=>[t.id, t.name]));
 
@@ -1514,7 +1523,7 @@ function showFace(el, n){
 buildDie($("die1")); buildDie($("die2"));
 showFace($("die1"), 3); showFace($("die2"), 5);
 
-let rolling = false;
+let rolling = false, rollHistory = [];
 $("diceOpenBtn").addEventListener("click", ()=>openModal("diceModal"));
 $("rollBtn").addEventListener("click", ()=>{
   if(rolling) return;
@@ -1541,6 +1550,9 @@ $("rollBtn").addEventListener("click", ()=>{
     diceLand(a===b);
     res.innerHTML = `${a} + ${b} = <span class="tot">${a+b}</span>칸 이동!` +
       (a===b ? ` <span class="dbl">🎉 더블! 한 번 더</span>` : "");
+    rollHistory.unshift(`${a}+${b}=<b>${a+b}</b>${a===b?"(더블)":""}`);
+    rollHistory = rollHistory.slice(0,5);
+    $("diceHistory").innerHTML = "최근: " + rollHistory.join(" · ");
     rolling = false; btn.disabled = false;
   }, 900);
 });
