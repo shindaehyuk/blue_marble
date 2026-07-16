@@ -696,7 +696,7 @@
   <button id="resetDeckBtn" type="button">덱 초기화</button>
 </div>
 
-<p class="hint">카드 내용을 바꾸려면 HTML 파일을 열어 <code>GOLDEN_KEYS</code> 배열을 수정하세요. 뽑기 기록과 남은 덱은 브라우저에 자동 저장됩니다.</p>
+<p class="hint">카드 내용을 바꾸려면 <code>assets/golden_keys.js</code> 파일의 <code>GOLDEN_KEYS</code> 배열을 수정하세요. 뽑기 기록과 남은 덱은 브라우저에 자동 저장됩니다.</p>
 
 <div class="history">
   <h3>최근 뽑은 카드</h3>
@@ -768,6 +768,7 @@
 <div class="toast" id="toast"></div>
 <div class="sr-only" aria-live="polite" id="ariaLive"></div>
 
+<script src="assets/golden_keys.js"></script>
 <script>
 /* ================================================================
    ✏️  황금열쇠 카드 내용 수정하기
@@ -782,33 +783,7 @@
    카드를 추가하려면 아래 형식으로 한 줄만 더 넣으세요:
      { desc:"카드 내용을 여기에 적으세요.", type:"plus" },
 ================================================================ */
-const GOLDEN_KEYS = [
-  { desc:"사망의 골짜기 탈출권을 획득합니다. 보관 후 1회 사용 가능", type:"plus" },
-  { desc:"1달란트를 획득합니다.", type:"plus" },
-  { desc:"가장 많은 달란트를 가진 팀에서 1달란트를 가져옵니다.", type:"plus" },
-  { desc:"한 바퀴를 돌고 달란트를 받은 후 총무부로 가세요.", type:"move" },
-  { desc:"뒤로 3칸 이동합니다.", type:"move" },
-  { desc:"앞으로 2칸 이동합니다.", type:"move" },
-  { desc:"상급으로 이동하여 달란트를 획득하세요.", type:"special" },
-  { desc:"마귀의 유혹으로 1달란트를 잃어버립니다.", type:"minus" },
-  { desc:"가장 일꾼이 적은 팀에 일꾼을 양보하세요", type:"special" },
-  { desc:"해외선교 다녀오기 (꽝, 다음 턴 쉬세요ㅎㅎ) ", type:"special" },
-  { desc:"진행자를 이겨라! 이기면 1 달란트 지급", type:"special" },
-  { desc:"미화부로 이동하여 홈런볼 1봉지를 얻으세요.", type:"special" },
-  { desc:"원하는 말과 위치를 바꾸세요.", type:"move" },
-  { desc:"꿈을 꿨습니다.. 가장 최근에 세워진 일꾼을 없애세요.", type:"minus" },
-  { desc:"달란트 지불 면제권을 획득합니다. 보관 후 1회 사용 가능 ", type:"special" },
-  { desc:"청년회로 이동하세요.", type:"move" },
-  { desc:"게임 재도전권을 획득합니다. 보관 후 1회 사용 가능", type:"special" },
-  { desc:"은장회 식사봉사 인원이 부족합니다. 은장회로 이동하세요.", type:"move" },
-  { desc:"대집회 주차 봉사자 2명이 필요합니다. 주차수송부로 이동하세요.", type:"move" },
-  { desc:"세계 선교를 위한 바자회 날입니다. 바자회로 이동하세요.", type:"move" },
-  { desc:"가장 적은 달란트를 가진 팀에게 1달란트를 가져옵니다.", type:"special" },
-  { desc:"황금열쇠 3번을 뽑아 원하는 하나를 선택하세요.", type:"special" },
-  { desc:"주님의 부름을 받아 우리 팀을 제외한 나머지 팀의 일꾼 한 명씩 주님께 떠납니다.", type:"special" },
-  { desc:"우리 팀을 제외한 나머지 팀들은 다음 자신의 턴이 오면 나온 주사위 수만큼 뒤로 이동합니다.", type:"move" },
-  { desc:"침륜에 빠져 현재 위치한 줄의 모든 일꾼들이 교회를 떠납니다.", type:"special" },
-];
+/* 카드 목록은 assets/golden_keys.js에서 불러옵니다 (보드 페이지와 공용) */
 
 /* 연출 설정 (원하면 조정하세요) */
 const CONFIG = {
