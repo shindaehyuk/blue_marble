@@ -243,7 +243,7 @@
   .x2badge.on{ display:block; }
   @keyframes x2pop{ from{ transform:scale(0);} to{ transform:scale(1);} }
 
-  /* ------- 바자회 달란트 저금통 ------- */
+  /* ------- 바자회 달란트 헌금통 ------- */
   .potbadge{
     position:absolute; left:3px; bottom:24px; z-index:3;
     font-size:clamp(9px,1.25vmin,12.5px); font-weight:900;
@@ -301,20 +301,18 @@
   .wbtn:hover{ transform:scale(1.18); background:var(--gold); color:#2b1f04; }
   .wbtn::before{ content:"+"; margin-top:-1px; }
 
-  /* ------- 일꾼 말뚝 ------- */
+  /* ------- 일꾼 (팀 색깔 사람 모양) ------- */
   .workers{
     position:absolute; left:3px; right:24px; top:3px; z-index:2;
-    display:flex; flex-wrap:wrap; gap:2px; justify-content:flex-start;
+    display:flex; flex-wrap:wrap; gap:1px; justify-content:flex-start;
     pointer-events:none;
   }
   .worker{
-    width:clamp(12px,1.7vmin,17px); height:clamp(12px,1.7vmin,17px);
-    border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-size:clamp(7px,1.05vmin,10px);
-    background:var(--wc); border:1.5px solid #fff;
-    box-shadow:0 1px 4px rgba(0,0,0,.5);
+    width:clamp(13px,1.95vmin,20px); height:clamp(13px,1.95vmin,20px);
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.65));
+    animation:workerIn .35s cubic-bezier(.3,1.5,.5,1);
   }
+  @keyframes workerIn{ from{ transform:scale(0) translateY(4px);} to{ transform:scale(1) translateY(0);} }
 
   /* ------- 보드 중앙 ------- */
   .center{
@@ -650,6 +648,55 @@
   .gk-item .gk-desc{ font-size:13.5px; line-height:1.55; color:var(--text); word-break:keep-all; }
   .gk-count{ padding:0 20px 4px; font-size:12px; color:var(--muted); text-align:center; }
 
+  /* ------- 보유 카드 관리 모달 ------- */
+  .item-list{ display:flex; flex-direction:column; gap:11px; padding:14px 18px 18px; }
+  .item-team{
+    background:rgba(8,17,33,.6);
+    border:2px solid color-mix(in srgb, var(--tc) 45%, transparent);
+    border-radius:14px; padding:10px 12px 11px;
+  }
+  .item-team .it-head{ display:flex; align-items:center; gap:9px; margin-bottom:9px; }
+  .item-team .face{
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    background:color-mix(in srgb, var(--tc) 20%, transparent);
+    border:2px solid var(--tc);
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+  }
+  .item-team .it-head b{ font-size:14.5px; color:var(--text); }
+  .item-team .it-total{ margin-left:auto; font-size:11px; color:var(--muted); font-weight:600; }
+  .it-rows{ display:flex; flex-direction:column; gap:6px; }
+  .it-row{
+    display:flex; align-items:center; gap:8px;
+    background:rgba(15,30,54,.55); border:1px solid rgba(255,255,255,.09);
+    border-radius:10px; padding:5px 6px 5px 10px;
+  }
+  .it-row .nm{ flex:1; font-size:12.5px; font-weight:700; color:var(--text);
+    display:flex; align-items:center; gap:6px; word-break:keep-all; line-height:1.3; }
+  .it-row .cnt{
+    font-family:var(--mono); font-size:15px; font-weight:800;
+    color:var(--gold-light); min-width:26px; text-align:center;
+  }
+  .it-row .cnt.zero{ color:var(--muted); opacity:.55; }
+  .it-btn{
+    height:30px; border-radius:8px; cursor:pointer; flex-shrink:0;
+    font-size:13px; font-weight:800; line-height:1;
+    border:1px solid rgba(255,255,255,.3);
+    transition:transform .13s ease, filter .13s ease;
+  }
+  .it-btn:hover{ transform:translateY(-1.5px); filter:brightness(1.07); }
+  .it-btn:active{ transform:scale(.94); }
+  .it-btn.add{
+    width:30px;
+    background:linear-gradient(180deg, var(--gold-light), var(--gold) 75%);
+    color:#2b1f04;
+  }
+  .it-btn.use{
+    padding:0 11px;
+    background:rgba(15,30,54,.9); color:var(--gold-light);
+    border:1.5px solid var(--navy-line);
+  }
+  .it-btn.use:disabled{ opacity:.35; cursor:not-allowed; transform:none; filter:none; }
+
   /* ------- 팀 이름 수정 모달 ------- */
   .team-edit-list{ display:flex; flex-direction:column; gap:10px; padding:16px 20px 4px; }
   .te-row{
@@ -747,6 +794,7 @@
     <button class="side-btn" id="rulesBtn"><span class="ico">📖</span>게임 규칙<br>보기</button>
     <button class="side-btn" id="teamEditBtn"><span class="ico">✏️</span>팀 이름<br>수정하기</button>
     <button class="side-btn" id="goldListBtn"><span class="ico">🔑</span>황금열쇠<br>카드 목록</button>
+    <button class="side-btn" id="itemBtn"><span class="ico">🎟️</span>보유 카드<br>관리</button>
   </div>
 </div>
 
@@ -768,7 +816,7 @@
         <p id="tmZone"></p>
       </div>
       <div class="tm-sec" id="tmPotSec" style="display:none">
-        <h4>💰 바자회 달란트 저금통</h4>
+        <h4>💰 바자회 달란트 헌금통</h4>
         <div class="pot-amount"><b id="potAmount">0</b><span>달란트</span></div>
         <div class="pot-actions" id="potBazaarActions" style="display:none">
           <button class="pot-btn" data-add="2">+2 달란트 내기</button>
@@ -777,7 +825,7 @@
           <button class="pot-btn danger" id="potResetBtn">↺ 초기화</button>
         </div>
         <div id="potPrizeArea" style="display:none">
-          <p class="pot-claim-hint">상급에 도착한 팀이 저금통의 달란트를 모두 가져갑니다.<br>수령할 팀을 누르면 저금통이 비워집니다!</p>
+          <p class="pot-claim-hint">상급에 도착한 팀이 헌금통의 달란트를 모두 가져갑니다.<br>수령할 팀을 누르면 헌금통이 비워집니다!</p>
           <div class="pot-claim-grid" id="potClaimGrid"></div>
         </div>
       </div>
@@ -883,6 +931,7 @@
         <h4>🔑 황금열쇠</h4>
         <ul>
           <li>황금열쇠 칸에 도착하면 카드를 뽑아 지시를 따릅니다.</li>
+          <li>탈출권·면제권·재도전권 카드는 왼쪽 <b>🎟️ 보유 카드 관리</b>에서 팀별로 기록하고 사용하세요.</li>
         </ul>
       </div>
       <div class="rule-sec">
@@ -940,8 +989,24 @@
   </div>
 </div>
 
+<!-- ============================================================
+     🪟 보유 카드 관리 모달
+============================================================ -->
+<div class="modal" id="itemModal" aria-hidden="true">
+  <div class="mback" data-close></div>
+  <div class="mcard big">
+    <button class="mclose" data-close>✕</button>
+    <div class="rules-head">
+      <h3>🎟️ 팀별 보유 카드</h3>
+      <p>황금열쇠에서 얻은 카드를 기록하고 사용하세요 (+ 획득 · 사용 시 1장 차감)</p>
+    </div>
+    <div class="item-list" id="itemList"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="assets/golden_keys.js"></script>
 <script>
 /* ================================================================
    ✏️ 보드 칸 정보 (PPT 슬라이드 기준)
@@ -979,7 +1044,7 @@ const TILES = [
     game:"겹친 그림 찾기 · 초근접 음식 맞추기 게임", 
     win:"더 많은 그림을 맞추거나, 음식을 먼저 맞춘 팀이 승리"},
   { name:"사망의 골짜기", img:"assets/image78.png", kind:"island",
-    desc:"한 턴 쉬기! 더블이 나오면 다시 굴려서 바로 탈출합니다." },
+    desc:"한 턴 쉬기! 더블이 나오면 바로 탈출합니다. (황금열쇠 탈출권으로도 탈출 가능)" },
   { name:"친교부",        img:"assets/image66.png", kind:"dept", home:"B",
     desc:"친교부 칸에 도착했습니다.",
     game:"5인 6각 - 5명이 서로 검지를 맞대고 서로의 검지 사이에 젓가락을 끼워서 젓가락을 떨어뜨리지 않고 먼저 반환점을 돌아 오는 게임",
@@ -1019,7 +1084,7 @@ const TILES = [
     game:"영어 끝말잇기",
     win:"5초 안에 대답 못할 시 패배" },
   { name:"바자회",        img:"assets/image80.png", kind:"bazaar",
-    desc:"2달란트를 내세요! 낸 달란트는 저금통에 쌓이고, 상급 칸에서 가져갈 수 있습니다." },
+    desc:"2달란트를 내세요! 낸 달란트는 헌금통에 쌓이고, 상급 칸에서 가져갈 수 있습니다." },
   { name:"시설관리부",    img:"assets/image76.png", kind:"dept", home:"D",
     desc:"시설관리부 칸에 도착했습니다.",
     game:"병뚜껑을 정해진 위치로 가장 근접하게 날리는 게임",
@@ -1031,7 +1096,7 @@ const TILES = [
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"상급",          img:"assets/image59.png", kind:"prize",
-    desc:"바자회 저금통에 모여 있는 달란트를 모두 가져갑니다!" },
+    desc:"바자회 헌금통에 모여 있는 달란트를 모두 가져갑니다!" },
   { name:"주차수송부",    img:"assets/image74.png", kind:"dept", home:"D",
     desc:"주차수송부 칸에 도착했습니다.",
     game:"접시에 탁구공을 올려 등에 올리고, 기어가서 수송하는 게임",
@@ -1060,7 +1125,16 @@ function teamOf(id){ return TEAMS.find(t=>t.id===id); }
 /* ---------- 상태 (브라우저에 자동 저장) ---------- */
 let workers = {};   // { tileIndex: ["A","B",...] }
 let pieces  = {};   // { teamId: {x,y} (% 좌표) }
-let pot     = 0;    // 바자회 달란트 저금통 (상급 수령 시 초기화)
+let pot     = 0;    // 바자회 달란트 헌금통 (상급 수령 시 초기화)
+
+/* 황금열쇠로 얻는 보유 카드 종류 */
+const ITEM_TYPES = [
+  { id:"escape", emoji:"🗝️", name:"사망의 골짜기 탈출권" },
+  { id:"exempt", emoji:"🛡️", name:"달란트 지불 면제권" },
+  { id:"retry",  emoji:"🔄", name:"게임 재도전권" },
+];
+const ITEM_KEY = "bm_items_v1";
+let items = Object.fromEntries(TEAMS.map(t=>[t.id, Object.fromEntries(ITEM_TYPES.map(x=>[x.id,0]))]));
 
 function loadState(){
   try{ const w = JSON.parse(localStorage.getItem(WORKER_KEY)); if(w && typeof w==="object") workers = w; }catch(e){}
@@ -1070,6 +1144,15 @@ function loadState(){
     if(n && typeof n==="object") TEAMS.forEach(t=>{ if(n[t.id]) t.name = String(n[t.id]).slice(0,12); });
   }catch(e){}
   try{ const p = parseInt(localStorage.getItem(POT_KEY), 10); if(!isNaN(p) && p>=0) pot = p; }catch(e){}
+  try{
+    const it = JSON.parse(localStorage.getItem(ITEM_KEY));
+    if(it && typeof it==="object") TEAMS.forEach(t=>{
+      if(it[t.id]) ITEM_TYPES.forEach(x=>{
+        const v = parseInt(it[t.id][x.id],10);
+        items[t.id][x.id] = (!isNaN(v) && v>=0) ? v : 0;
+      });
+    });
+  }catch(e){}
   /* 일꾼을 세울 수 없는 칸에 저장돼 있던 일꾼은 정리 */
   Object.keys(workers).forEach(k=>{
     if(!TILES[k] || TILES[k].kind!=="dept") delete workers[k];
@@ -1080,6 +1163,7 @@ function saveState(){
     localStorage.setItem(WORKER_KEY, JSON.stringify(workers));
     localStorage.setItem(PIECE_KEY,  JSON.stringify(pieces));
     localStorage.setItem(POT_KEY,    String(pot));
+    localStorage.setItem(ITEM_KEY,   JSON.stringify(items));
   }catch(e){}
 }
 
@@ -1166,7 +1250,12 @@ function renderWorkers(i){
   const list = workers[i] || [];
   box.innerHTML = list.map(id=>{
     const tm = teamOf(id);
-    return `<span class="worker" style="--wc:${tm.color}" title="${tm.name} 일꾼">${tm.emoji}</span>`;
+    return `<svg class="worker" viewBox="0 0 24 24" role="img" aria-label="${tm.name} 일꾼">
+      <title>${tm.name} 일꾼</title>
+      <path d="M12 2.4a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6Z
+               M12 12.1c4.5 0 7.6 3.1 7.6 8.3 0 .7-.5 1.2-1.2 1.2H5.6c-.7 0-1.2-.5-1.2-1.2 0-5.2 3.1-8.3 7.6-8.3Z"
+        fill="${tm.color}" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+    </svg>`;
   }).join("");
   /* 홈팀 일꾼이 세워졌으면 통행료 ×2 표시 */
   const x2 = tileEls[i].querySelector(".x2badge");
@@ -1234,7 +1323,7 @@ function openTileModal(i){
     $("tmWorkers").style.display = "none";
   }
 
-  /* 바자회/상급: 달란트 저금통 표시 */
+  /* 바자회/상급: 달란트 헌금통 표시 */
   const isPotTile = t.kind==="bazaar" || t.kind==="prize";
   $("tmPotSec").style.display = isPotTile ? "" : "none";
   if(isPotTile){
@@ -1452,7 +1541,7 @@ $("rollBtn").addEventListener("click", ()=>{
   }, 900);
 });
 
-/* ---------- 바자회 달란트 저금통 (상급과 연동) ---------- */
+/* ---------- 바자회 달란트 헌금통 (상급과 연동) ---------- */
 function renderPot(){
   /* 바자회·상급 칸 위의 💰 배지와 모달 숫자를 갱신 */
   TILES.forEach((t,i)=>{
@@ -1466,16 +1555,16 @@ function renderPot(){
 function addPot(n){
   pot = Math.max(0, pot + n);
   saveState(); renderPot();
-  if(n>0) showToast(`💰 ${n}달란트를 저금통에 넣었습니다. (현재 ${pot}달란트)`);
+  if(n>0) showToast(`💰 ${n}달란트를 헌금통에 넣었습니다. (현재 ${pot}달란트)`);
   else    showToast(`💰 ${-n}달란트를 뺐습니다. (현재 ${pot}달란트)`);
 }
 $("potBazaarActions").querySelectorAll("[data-add]").forEach(b=>{
   b.addEventListener("click", ()=>addPot(parseInt(b.dataset.add,10)));
 });
 $("potResetBtn").addEventListener("click", ()=>{
-  if(pot>0 && !confirm(`저금통(${pot}달란트)을 초기화할까요?`)) return;
+  if(pot>0 && !confirm(`헌금통(${pot}달란트)을 초기화할까요?`)) return;
   pot = 0; saveState(); renderPot();
-  showToast("↺ 바자회 저금통을 초기화했습니다.");
+  showToast("↺ 바자회 헌금통을 초기화했습니다.");
 });
 function renderPotClaimGrid(){
   /* 상급 칸: 수령할 팀 선택 버튼 */
@@ -1486,14 +1575,63 @@ function renderPotClaimGrid(){
     b.style.setProperty("--tc", t.color);
     b.innerHTML = `${t.emoji} ${t.name}`;
     b.addEventListener("click", ()=>{
-      if(pot===0){ showToast("💸 저금통이 비어 있습니다!"); return; }
+      if(pot===0){ showToast("💸 헌금통이 비어 있습니다!"); return; }
       const amount = pot;
       pot = 0; saveState(); renderPot();
-      showToast(`🏆 ${t.emoji} ${t.name}이 상급 ${amount}달란트를 획득! 저금통이 비워졌습니다.`);
+      showToast(`🏆 ${t.emoji} ${t.name}이 상급 ${amount}달란트를 획득! 헌금통이 비워졌습니다.`);
     });
     $("potClaimGrid").appendChild(b);
   });
 }
+
+/* ---------- 보유 카드 관리 모달 ---------- */
+function renderItemList(){
+  $("itemList").innerHTML = "";
+  TEAMS.forEach(t=>{
+    const total = ITEM_TYPES.reduce((a,x)=>a+items[t.id][x.id], 0);
+    const block = document.createElement("div");
+    block.className = "item-team";
+    block.style.setProperty("--tc", t.color);
+    block.innerHTML = `
+      <div class="it-head">
+        <div class="face">${t.emoji}</div>
+        <b>${t.name}</b>
+        <span class="it-total">총 ${total}장</span>
+      </div>
+      <div class="it-rows">
+        ${ITEM_TYPES.map(x=>{
+          const n = items[t.id][x.id];
+          return `<div class="it-row">
+            <span class="nm">${x.emoji} ${x.name}</span>
+            <span class="cnt${n===0?" zero":""}">${n}</span>
+            <button class="it-btn add" data-team="${t.id}" data-item="${x.id}" title="1장 획득">+</button>
+            <button class="it-btn use" data-team="${t.id}" data-item="${x.id}" ${n===0?"disabled":""}>사용</button>
+          </div>`;
+        }).join("")}
+      </div>`;
+    $("itemList").appendChild(block);
+  });
+}
+$("itemList").addEventListener("click", e=>{
+  const btn = e.target.closest(".it-btn");
+  if(!btn) return;
+  const team = teamOf(btn.dataset.team);
+  const item = ITEM_TYPES.find(x=>x.id===btn.dataset.item);
+  if(btn.classList.contains("add")){
+    items[team.id][item.id]++;
+    saveState(); renderItemList();
+    showToast(`${item.emoji} ${team.emoji} ${team.name}이 「${item.name}」을 획득했습니다! (보유 ${items[team.id][item.id]}장)`);
+  }else{
+    if(items[team.id][item.id]<=0) return;
+    items[team.id][item.id]--;
+    saveState(); renderItemList();
+    showToast(`${item.emoji} ${team.emoji} ${team.name}이 「${item.name}」을 사용했습니다! (남은 ${items[team.id][item.id]}장)`);
+  }
+});
+$("itemBtn").addEventListener("click", ()=>{
+  renderItemList();
+  openModal("itemModal");
+});
 
 /* ---------- 게임 규칙 모달 ---------- */
 function renderRuleZoneChips(){
@@ -1509,35 +1647,7 @@ $("rulesBtn").addEventListener("click", ()=>{
 });
 
 /* ---------- 황금열쇠 카드 목록 모달 ----------
-   ⚠️ 카드 내용을 바꾸면 golden_key.html의 GOLDEN_KEYS 배열과
-   아래 배열을 함께 수정해 주세요 (뽑기 페이지와 동일해야 합니다). */
-const GOLDEN_KEYS = [
-  { desc:"사망의 골짜기 탈출권을 획득합니다. 보관 후 1회 사용 가능", type:"plus" },
-  { desc:"1달란트를 획득합니다.", type:"plus" },
-  { desc:"가장 많은 달란트를 가진 팀에서 1달란트를 가져옵니다.", type:"plus" },
-  { desc:"한 바퀴를 돌고 달란트를 받은 후 총무부로 가세요.", type:"move" },
-  { desc:"뒤로 3칸 이동합니다.", type:"move" },
-  { desc:"앞으로 2칸 이동합니다.", type:"move" },
-  { desc:"상급으로 이동하여 달란트를 획득하세요.", type:"special" },
-  { desc:"마귀의 유혹으로 1달란트를 잃어버립니다.", type:"minus" },
-  { desc:"가장 일꾼이 적은 팀에 일꾼을 양보하세요", type:"special" },
-  { desc:"해외선교 다녀오기 (꽝, 다음 턴 쉬세요ㅎㅎ)", type:"special" },
-  { desc:"진행자를 이겨라! 이기면 1 달란트 지급", type:"special" },
-  { desc:"미화부로 이동하여 홈런볼 1봉지를 얻으세요.", type:"special" },
-  { desc:"원하는 말과 위치를 바꾸세요.", type:"move" },
-  { desc:"꿈을 꿨습니다.. 가장 최근에 세워진 일꾼을 없애세요.", type:"minus" },
-  { desc:"달란트 지불 면제권을 획득합니다. 보관 후 1회 사용 가능", type:"special" },
-  { desc:"청년회로 이동하세요.", type:"move" },
-  { desc:"게임 재도전권을 획득합니다. 보관 후 1회 사용 가능", type:"special" },
-  { desc:"은장회 식사봉사 인원이 부족합니다. 은장회로 이동하세요.", type:"move" },
-  { desc:"대집회 주차 봉사자 2명이 필요합니다. 주차수송부로 이동하세요.", type:"move" },
-  { desc:"세계 선교를 위한 바자회 날입니다. 바자회로 이동하세요.", type:"move" },
-  { desc:"가장 적은 달란트를 가진 팀에게 1달란트를 가져옵니다.", type:"special" },
-  { desc:"황금열쇠 3번을 뽑아 원하는 하나를 선택하세요.", type:"special" },
-  { desc:"주님의 부름을 받아 우리 팀을 제외한 나머지 팀의 일꾼 한 명씩 주님께 떠납니다.", type:"special" },
-  { desc:"우리 팀을 제외한 나머지 팀들은 다음 자신의 턴이 오면 나온 주사위 수만큼 뒤로 이동합니다.", type:"move" },
-  { desc:"침륜에 빠져 현재 위치한 줄의 모든 일꾼들이 교회를 떠납니다.", type:"special" },
-];
+   카드 데이터는 assets/golden_keys.js에서 불러옵니다 (뽑기 페이지와 공용) */
 const GK_TYPE_LABEL = { plus:"이득", minus:"손해", move:"이동", special:"특수" };
 
 function renderGoldList(){
@@ -1600,8 +1710,9 @@ $("teamResetBtn").addEventListener("click", ()=>{
 /* ---------- 황금열쇠 / 초기화 ---------- */
 $("goldBtn").addEventListener("click", ()=>{ location.href = GOLDEN_KEY_PAGE; });
 $("resetBtn").addEventListener("click", ()=>{
-  if(!confirm("말 위치, 모든 일꾼, 바자회 저금통을 초기화할까요?")) return;
+  if(!confirm("말 위치, 모든 일꾼, 바자회 헌금통, 팀 보유 카드를 초기화할까요?")) return;
   workers = {}; pieces = {}; pot = 0;
+  items = Object.fromEntries(TEAMS.map(t=>[t.id, Object.fromEntries(ITEM_TYPES.map(x=>[x.id,0]))]));
   saveState(); renderAllWorkers(); renderPieces(); renderPot();
   showToast("↺ 보드를 초기화했습니다.");
 });
