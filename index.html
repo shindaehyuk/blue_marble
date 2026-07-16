@@ -1041,8 +1041,8 @@ const TILES = [
     win:"30초에 가장 근사하게 맞추는 팀이 승리" },
   { name:"청년회",        img:"assets/image61.png", kind:"dept", home:"B",
     desc:"청년회 칸에 도착했습니다.",
-    game:"겹친 그림 찾기 · 초근접 음식 맞추기 게임", 
-    win:"더 많은 그림을 맞추거나, 음식을 먼저 맞춘 팀이 승리"},
+    game:"겹친 그림 찾기 · 초근접 음식 맞추기 게임",
+    win:"겹친 그림을 <b>빨리</b> 맞추거나, 음식을 <b>먼저</b> 맞춘 팀이 승리"},
   { name:"사망의 골짜기", img:"assets/image78.png", kind:"island",
     desc:"한 턴 쉬기! 더블이 나오면 바로 탈출합니다. (황금열쇠 탈출권으로도 탈출 가능)" },
   { name:"친교부",        img:"assets/image66.png", kind:"dept", home:"B",
@@ -1057,8 +1057,11 @@ const TILES = [
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"농선부",        img:"assets/image68.png", kind:"dept", home:"B",
     desc:"농선부 칸에 도착했습니다.",
-    game:"몸으로 말해요 (1분 동안)",
-    win:"더 많이 맞춘 팀이 승리" },
+    game:"몸으로 말해요 (1분 동안) — <b>팀 전원 참여</b>, 난이도·주제 랜덤<br>" +
+      "① 한 사람씩 나와서 문제 설명 (<b>가장 오른쪽 사람</b>부터 릴레이로 설명)<br>" +
+      "② 정답을 맞출 때마다 <b>오른쪽으로 한 칸씩 이동</b><br>" +
+      "③ 문제를 설명한 사람은 <b>제일 왼쪽으로 이동</b>",
+    win:"제한 시간 동안 더 많이 맞춘 팀이 승리 · <b>PASS는 팀당 1회</b>만 가능" },
   { name:"미화부",        img:"assets/image69.png", kind:"dept", home:"C",
     desc:"미화부 칸에 도착했습니다.",
     game:"과자 던져서 많이 먹기",
@@ -1309,8 +1312,9 @@ function openTileModal(i){
   const hasGame = !!t.game;
   $("tmGameSec").style.display = hasGame ? "" : "none";
   $("tmWinSec").style.display  = t.win ? "" : "none";
-  if(hasGame) $("tmGame").textContent = t.game;
-  if(t.win)   $("tmWin").textContent  = t.win;
+  /* 강조(<b>)·줄바꿈(<br>) 표시를 위해 innerHTML 사용 (TILES 데이터는 내부 관리 데이터) */
+  if(hasGame) $("tmGame").innerHTML = t.game;
+  if(t.win)   $("tmWin").innerHTML  = t.win;
 
   const list = workers[i] || [];
   if(isDept){
