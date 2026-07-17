@@ -1073,7 +1073,9 @@ const TILES = [
     win:"제한 시간 동안 더 많이 맞춘 팀이 승리 · <b>PASS는 팀당 1회</b>만 가능" },
   { name:"미화부",        img:"assets/image69.png", kind:"dept", home:"C",
     desc:"미화부 칸에 도착했습니다.",
-    game:"과자 던져서 많이 먹기",
+    game:"<b>30초</b> 동안 팀원이 돌아가며 과자를 받아 먹는다!<br>" +
+      "팀에서 <b>먹는 사람 5명 · 던지는 사람 1명</b> 출전<br>" +
+      "(게임이 끝난 후 바닥에 떨어진 과자 부스러기는 <b>각 팀에서 청소</b>)",
     win:"더 많은 과자를 먹은 팀이 승리" },
   { name:"총무부",        img:"assets/image79.png", kind:"hq",
     desc:"다음 턴에 원하는 곳으로 갈 수 있습니다." },
@@ -1103,8 +1105,9 @@ const TILES = [
     win:"동전을 <b>먼저</b> 가져오는 팀이 승리" },
   { name:"꽃꽂이부",      img:"assets/image75.png", kind:"dept", home:"D",
     desc:"꽃꽂이부 칸에 도착했습니다.",
-    game:"다트 꽃꽂이",
-    win:"많은 점수를 얻은 팀이 승리" },
+    game:"다트 꽃꽂이 — <b>장미꽃 3송이</b>를 다트판에 던지기<br>" +
+      "(던지는 시간 제한: <b>25초</b> · 초는 단순 시간 제한용)",
+    win:"가장 <b>높은 점수</b>를 받은 팀이 승리" },
   { name:"황금열쇠",      img:"assets/image60.png", kind:"gold",
     desc:"황금열쇠 칸! 카드를 뽑아 지시를 따르세요." },
   { name:"상급",          img:"assets/image59.png", kind:"prize",
